@@ -1,0 +1,15 @@
+{
+  "name": "25palabras3d",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --format=iife --minify --outfile=js/app.js",
+    "voces": "node tools/frases.mjs && /workspace/piper/venv/bin/python tools/gen_voces.py tools/frases.json .",
+    "test": "node tools/flujo.mjs programa normal capturas/prueba"
+  },
+  "dependencies": {
+    "esbuild": "^0.28.2",
+    "puppeteer-core": "^25.13.0",
+    "three": "^0.186.1"
+  }
+}

@@ -1,0 +1,10 @@
+import puppeteer from 'puppeteer-core';
+const [lang, out, js] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+await p.evaluateOnNewDocument((l) => { localStorage.setItem('ac_lang', l); }, lang);
+await p.goto('http://localhost:8823/index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 90000 }).catch(e => console.log('timeout'));
+await new Promise(r => setTimeout(r, 3000));
+console.log(await p.evaluate(js || '1'));
+await new Promise(r => setTimeout(r, 1500)); await p.screenshot({ path: out }); await b.close();

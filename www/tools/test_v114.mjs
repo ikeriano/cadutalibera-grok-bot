@@ -1,0 +1,15 @@
+import puppeteer from 'puppeteer-core';
+const base = process.argv[2], out = 'tmp/v114';
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required', '--mute-audio'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+await p.evaluateOnNewDocument(() => { localStorage.setItem('ac_titulo', 'Súper Trampillas'); localStorage.setItem('ac_theme', 'youtube'); localStorage.setItem('ac_yt_titulo', 'YOUTUBE CUMPLE AÑOS'); });
+await p.goto(base + 'index.html'); await new Promise(r => setTimeout(r, 3000)); await p.screenshot({ path: out + '-1-portada.png' });
+await p.keyboard.press('Enter'); await new Promise(r => setTimeout(r, 1500)); await p.screenshot({ path: out + '-2-menu.png' });
+await p.evaluate(() => window.__ac.menu('options')); await new Promise(r => setTimeout(r, 800));
+await p.evaluate(() => document.getElementById('rowTitulo').scrollIntoView()); await p.screenshot({ path: out + '-3-opciones.png' });
+await p.evaluate(async () => { const r = await fetch('tmp/prueba.webm'); const bl = await r.blob(); await window.__v114.vcabGuarda(new File([bl], 'prueba.webm', { type: 'video/webm' })); });
+p.evaluate(() => window.__v114.cabVideo(null, null, null)); await new Promise(r => setTimeout(r, 4500)); await p.screenshot({ path: out + '-4-videocab.png' });
+await new Promise(r => setTimeout(r, 4000)); await p.screenshot({ path: out + '-5-videocab.png' });
+console.log(await p.evaluate(() => JSON.stringify(window.__promo)));
+await b.close();

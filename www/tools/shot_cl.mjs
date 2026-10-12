@@ -1,0 +1,16 @@
+import puppeteer from 'puppeteer-core';
+const [lang, pref] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox','--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: 540, height: 960 });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+await p.evaluateOnNewDocument((l) => { localStorage.setItem('ac_lang', l); }, lang);
+await p.goto('http://localhost:8823/clasico_cl/index.html'); await new Promise(r => setTimeout(r, 1500));
+const S = async (n) => { await p.screenshot({ path: `${pref}-${n}.png` }); };
+await S('1-menu');
+await p.evaluate(() => document.querySelector('#mPlay').click()); await new Promise(r => setTimeout(r, 500)); await p.type('#pName', 'Iker'); await p.evaluate(() => document.querySelector('#pM').click()); await S('2-profilo');
+await p.evaluate(() => document.querySelector('#pOk').click()); await new Promise(r => setTimeout(r, 1200)); await S('3-tabellone');
+await p.evaluate(() => document.querySelector('#ring .slot').click()); await new Promise(r => setTimeout(r, 2500)); await S('4-duello');
+await p.evaluate(() => { const i = document.getElementById('kb'); i.value = 'AB'; i.dispatchEvent(new Event('input')); }); await new Promise(r => setTimeout(r, 300)); await S('5-duello-scrive');
+await new Promise(r => setTimeout(r, 33000)); await new Promise(r => setTimeout(r, 2500)); await S('6-caduta');
+await new Promise(r => setTimeout(r, 5000)); await S('7-dopo');
+await b.close();

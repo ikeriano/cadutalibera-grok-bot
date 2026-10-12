@@ -1,0 +1,10 @@
+import puppeteer from 'puppeteer-core'; import fs from 'fs';
+const [lang, out, px, py, pz] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+await p.evaluateOnNewDocument((l) => { localStorage.setItem('ac_lang', l); }, lang);
+await p.goto('http://localhost:8823/index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 90000 }).catch(e => console.log('timeout'));
+await new Promise(r => setTimeout(r, 3500));
+const url = await p.evaluate((x, y, z) => { const e = window.__eng; const cam = e.camera.clone(); cam.fov = 55; cam.aspect = 16 / 9; cam.position.set(+x, +y, +z); cam.up.set(0, 1, 0); cam.lookAt(0, 0.5, 0); cam.updateProjectionMatrix(); cam.updateMatrixWorld(); e.renderer.render(e.scene, cam); return e.renderer.domElement.toDataURL('image/png'); }, px || 0, py || 7, pz || 15);
+fs.writeFileSync(out, Buffer.from(url.split(',')[1], 'base64')); await b.close();
