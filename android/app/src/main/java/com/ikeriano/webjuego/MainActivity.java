@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
         s.setSupportZoom(false);
         s.setBuiltInZoomControls(false);
         s.setTextZoom(100);
-        WebView.setWebContentsDebuggingEnabled(false);
+        WebView.setWebContentsDebuggingEnabled(true);
         web.addJavascriptInterface(new Puente(), "AppNativo");
         if (Build.VERSION.SDK_INT < 29) try { requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 7); } catch (Throwable ignored) { }
 
@@ -132,36 +132,42 @@ public class MainActivity extends Activity {
         h.put("Access-Control-Allow-Origin", "*");
         h.put("Cache-Control", "no-cache");
         h.put("Accept-Ranges", "bytes");
-        byte[] data;
-        try {
-            data = leer(getAssets().open(ROOT + path));
-        } catch (IOException e) {
-            return new WebResourceResponse("text/plain", "utf-8", 404, "Not Found", h,
-                    new ByteArrayInputStream(new byte[0]));
+        long len = -1;
+        try { android.content.res.AssetFileDescriptor fd = getAssets().openFd(ROOT + path); len = fd.getLength(); fd.close(); } catch (IOException ignored) { }
+        InputStream in;
+        try { in = getAssets().open(ROOT + path, android.content.res.AssetManager.ACCESS_STREAMING); }
+        catch (IOException e) {
+            return new WebResourceResponse("text/plain", "utf-8", 404, "Not Found", h, new ByteArrayInputStream(new byte[0]));
         }
+        String enc = mime.startsWith("text/") || mime.contains("javascript") || mime.contains("json") ? "utf-8" : null;
         String range = null;
         if (headers != null) for (Map.Entry<String, String> e : headers.entrySet())
             if ("range".equalsIgnoreCase(e.getKey())) range = e.getValue();
-        String enc = mime.startsWith("text/") || mime.contains("javascript") || mime.contains("json") ? "utf-8" : null;
-        if (range != null && range.trim().startsWith("bytes=")) {
-            try {
+        try {
+            if (len < 0 && range != null) { byte[] d = leer(in); len = d.length; in = new ByteArrayInputStream(d); }
+            if (range != null && range.trim().startsWith("bytes=") && len >= 0) {
                 String[] p = range.trim().substring(6).split("-", -1);
-                long len = data.length, start, end;
+                long start, end;
                 if (p[0].isEmpty()) { start = Math.max(0, len - Long.parseLong(p[1].trim())); end = len - 1; }
                 else { start = Long.parseLong(p[0].trim()); end = p.length > 1 && !p[1].trim().isEmpty() ? Math.min(Long.parseLong(p[1].trim()), len - 1) : len - 1; }
-                if (start >= len || start > end) {
-                    h.put("Content-Range", "bytes */" + len);
-                    return new WebResourceResponse(mime, enc, 416, "Range Not Satisfiable", h, new ByteArrayInputStream(new byte[0]));
-                }
-                int n = (int) (end - start + 1);
+                if (start >= len || start > end) { in.close(); h.put("Content-Range", "bytes */" + len); return new WebResourceResponse(mime, enc, 416, "Range Not Satisfiable", h, new ByteArrayInputStream(new byte[0])); }
+                long sk = start; while (sk > 0) { long k = in.skip(sk); if (k <= 0) break; sk -= k; }
+                long n = end - start + 1;
                 h.put("Content-Range", "bytes " + start + "-" + end + "/" + len);
                 h.put("Content-Length", String.valueOf(n));
-                return new WebResourceResponse(mime, enc, 206, "Partial Content", h,
-                        new ByteArrayInputStream(data, (int) start, n));
-            } catch (Exception ignored) { }
-        }
-        h.put("Content-Length", String.valueOf(data.length));
-        return new WebResourceResponse(mime, enc, 200, "OK", h, new ByteArrayInputStream(data));
+                return new WebResourceResponse(mime, enc, 206, "Partial Content", h, new Limitado(in, n));
+            }
+        } catch (Exception ignored) { }
+        if (len >= 0) h.put("Content-Length", String.valueOf(len));
+        return new WebResourceResponse(mime, enc, 200, "OK", h, in);
+    }
+
+    /** InputStream que entrega como máximo n bytes (para respuestas 206). */
+    private static class Limitado extends java.io.FilterInputStream {
+        private long left;
+        Limitado(InputStream in, long n) { super(in); left = n; }
+        @Override public int read() throws IOException { if (left <= 0) return -1; int c = super.read(); if (c >= 0) left--; return c; }
+        @Override public int read(byte[] b, int off, int len) throws IOException { if (left <= 0) return -1; int n = super.read(b, off, (int) Math.min(len, left)); if (n > 0) left -= n; return n; }
     }
 
     private static byte[] leer(InputStream in) throws IOException {

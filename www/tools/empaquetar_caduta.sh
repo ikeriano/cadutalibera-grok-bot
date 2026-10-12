@@ -21,7 +21,7 @@ window.__logoQue = function (lang) { var p = window.__logoPref(); return p === '
 window.__logoUrl = function () { return null; };
 J
 sed -i '/sb3\/snd.js/d' $PUB/index.html
-sed -i "s#'clasico_cl/index.html', ##; s#'clasico_cl/', ##" $PUB/sw.js
+python3 /workspace/caduta/cl_pub/gen.py >/dev/null && cp -r /workspace/caduta/cl_pub/clasico_cl $PUB/clasico_cl
 python3 - "$PUB" <<'PY'
 import sys
 from PIL import Image, ImageDraw

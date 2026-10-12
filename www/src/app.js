@@ -17328,12 +17328,12 @@ let SE = class {
       return t;
     }).then((t) => new Promise((n, i) => this.ctx.decodeAudioData(t, n, i))).catch(() => null)), this.buffers.get(e);
   }
-  async playUrl(e, t = 1, n) {
+  async playUrl(e, t = 1, n, rate = 1) {
     const i = await this.loadUrl(e);
     if (!i && RC.FILE) return audioDirecto(e, t * this.voice.gain.value, n, this);
     if (!i) return { dur: -1, done: Promise.resolve() };
     const s = this.ctx.createBufferSource();
-    s.buffer = i;
+    s.buffer = i; if (typeof rate !== "undefined" && rate !== 1) s.playbackRate.value = rate;
     const o = this.ctx.createGain();
     return o.gain.value = t, s.connect(o), o.connect(this.voice), s.start(), this.playing.add(s), n && (this.tags.has(n) || this.tags.set(n, /* @__PURE__ */ new Set()), this.tags.get(n).add(s)), { dur: i.duration, done: new Promise((r) => {
       s.onended = () => {
@@ -17375,7 +17375,7 @@ let SE = class {
     const i = await this.load(e);
     if (!i) return;
     const s = this.ctx.createBufferSource();
-    s.buffer = i;
+    s.buffer = i; if (typeof rate !== "undefined" && rate !== 1) s.playbackRate.value = rate;
     const o = this.ctx.createGain();
     return o.gain.value = t, s.connect(o), o.connect(this.sfx), s.start(), this.playing.add(s), n && (this.tags.has(n) || this.tags.set(n, /* @__PURE__ */ new Set()), this.tags.get(n).add(s)), new Promise((r) => {
       s.onended = () => {
@@ -18533,7 +18533,7 @@ class Em {
     }
     const Be = [["50.000", "#ffd23a", "#3a2600"], ["25.000", "#ffd23a", "#3a2600"], ["15.000", "#ffd23a", "#3a2600"], ["5.000", "#ffd23a", "#3a2600"], ["1.000", "#ffd23a", "#3a2600"], ["+1", "#ffe9a8", "#3a2600"], ["×2", "#39c8ff", "#001a33"], ["÷2", "#ff9a2a", "#331400"], ["VIDA EXTRA", "#5fff8a", "#002a10"], ["LO PIERDES TODO", "#ff3b3b", "#330000"]], et = 512, k = 820, Q = 66, oe = 130, j = Vt(et, k, (O, T, S) => {
       const z = O.createLinearGradient(0, 0, 0, S);
-      z.addColorStop(0, "#06123a"), z.addColorStop(1, "#020818"), O.fillStyle = z, O.fillRect(0, 0, T, S), O.strokeStyle = "#" + r.getHexString(), O.lineWidth = 10, O.strokeRect(8, 8, T - 16, S - 16), O.textAlign = "center", O.textBaseline = "middle", O.fillStyle = "#ffffff", O.font = '900 54px "Arial Black", Arial, sans-serif', O.fillText("PREMIOS", T / 2, 58), O.fillStyle = "#ffd23a", O.font = "800 26px Arial, sans-serif", O.fillText("DE LA MONEDA", T / 2, 100), Be.forEach(([J, ae, te], we) => {
+      z.addColorStop(0, "#06123a"), z.addColorStop(1, "#020818"), O.fillStyle = z, O.fillRect(0, 0, T, S), O.strokeStyle = "#" + r.getHexString(), O.lineWidth = 10, O.strokeRect(8, 8, T - 16, S - 16), O.textAlign = "center", O.textBaseline = "middle", O.fillStyle = "#ffffff", O.font = '900 54px "Arial Black", Arial, sans-serif', O.fillText(window.__LANG === "it" ? "PREMI" : "PREMIOS", T / 2, 58), O.fillStyle = "#ffd23a", O.font = "800 26px Arial, sans-serif", O.fillText(window.__LANG === "it" ? "DELLA MONETA" : "DE LA MONEDA", T / 2, 100), Be.forEach(([J, ae, te], we) => {
         const be = oe + we * Q, Se = O.createLinearGradient(0, be, 0, be + Q - 10);
         Se.addColorStop(0, ae), Se.addColorStop(1, te), O.fillStyle = Se, O.beginPath(), O.roundRect ? O.roundRect(40, be, T - 80, Q - 12, 26) : O.rect(40, be, T - 80, Q - 12), O.fill(), O.fillStyle = we < 6 ? "#1a1000" : "#ffffff", O.font = `900 ${J.length > 8 ? 34 : 44}px "Arial Black", Arial, sans-serif`, we >= 6 && (O.lineWidth = 6, O.strokeStyle = "rgba(0,0,0,.6)", O.strokeText(J, T / 2, be + (Q - 12) / 2 + 2)), O.fillText(J, T / 2, be + (Q - 12) / 2 + 2);
       });
@@ -20060,6 +20060,10 @@ function _2(a, e) {
   }), addEventListener("keyup", (d) => a.keys.delete(d.code)), addEventListener("blur", () => a.keys.clear());
 }
 const Do = [{ id: "normal", name: "Normal", emoji: "⭐", wallA: "#0a2a9a", wallB: "#1f5cff", chevA: "#ffd23a", chevB: "#f3b012", glow: 3725567, accent: 16752672, fog: 198679, bg: 132108, host: { suit: 1780572, shirt: 16777215, tie: 15966994 }, hashtag: "#AhoraCaigo", decor: "none", saludo: "¡Muy buenas noches y bienvenidos a ¡Ahora caigo!" }, { id: "primetime", name: "Especial Prime Time", emoji: "🌟", wallA: "#06123f", wallB: "#123a9a", chevA: "#ffe7a0", chevB: "#d9a520", glow: 7321855, accent: 16763194, fog: 132367, bg: 66313, host: { suit: 328965, shirt: 16777215, tie: 328965, bowtie: true }, decor: "primetime", saludo: "¡Muy buenas noches! Bienvenidos a una gala muy especial: ¡el Especial Prime Time de ¡Ahora caigo!", hashtag: "#AhoraCaigoPrimeTime", banner: "ESPECIAL PRIME TIME", festivo: true }, { id: "halloween", name: "Halloween", emoji: "🎃", wallA: "#2a0b45", wallB: "#5a1a8a", chevA: "#ff9a1a", chevB: "#e2520a", glow: 16742936, accent: 10173695, fog: 853012, bg: 459273, host: { suit: 1118481, shirt: 3869269, tie: 16742936, hat: "bruja", cape: 5900810 }, hashtag: "#AhoraCaigoHalloween", decor: "halloween", saludo: "¡Buuu! ¡Bienvenidos al especial de Halloween de ¡Ahora caigo!" }, { id: "ninos", name: "Niños", emoji: "🧸", wallA: "#0f8fd1", wallB: "#26c2f0", chevA: "#ff5fb0", chevB: "#ffd23a", glow: 6291376, accent: 16736176, fog: 661040, bg: 528418, host: { suit: 2074698, shirt: 16773994, tie: 16732064, hat: "helice" }, hashtag: "#AhoraCaigoNiños", decor: "ninos", saludo: "¡Hola, chicos y chicas! ¡Bienvenidos al especial infantil!" }, { id: "nochebuena", name: "Nochebuena", emoji: "🕯️", wallA: "#08154a", wallB: "#13307e", chevA: "#ffe08a", chevB: "#d4a017", glow: 16766842, accent: 8369407, fog: 131855, bg: 66056, host: { suit: 857656, shirt: 16777215, tie: 13934615 }, hashtag: "#AhoraCaigoNochebuena", decor: "nochebuena", saludo: "¡Feliz Nochebuena! Bienvenidos a esta noche tan especial." }, { id: "navidad", name: "Navidad", emoji: "🎄", wallA: "#8a0c12", wallB: "#c81a22", chevA: "#ffffff", chevB: "#2fbf4a", glow: 4783994, accent: 16724016, fog: 787206, bg: 393731, host: { suit: 11538458, shirt: 16777215, tie: 1739312, hat: "papanoel" }, hashtag: "#AhoraCaigoNavidad", decor: "navidad", saludo: "¡Feliz Navidad! ¡Jo, jo, jo! Bienvenidos al especial navideño." }, { id: "carnaval", name: "Carnaval", emoji: "🎭", wallA: "#4b0f8a", wallB: "#8a1fd0", chevA: "#3dff8a", chevB: "#ffd23a", glow: 16732120, accent: 4063114, fog: 787480, bg: 459278, host: { suit: 8003536, shirt: 16765498, tie: 4063114, hat: "corona", glasses: true }, hashtag: "#AhoraCaigoCarnaval", decor: "carnaval", saludo: "¡Que empiece el Carnaval! ¡Bienvenidos a la fiesta de ¡Ahora caigo!" }, { id: "findeano", name: "Fin de Año", emoji: "🥂", wallA: "#151515", wallB: "#3a3326", chevA: "#ffe28a", chevB: "#c9a227", glow: 16769162, accent: 13687039, fog: 328965, bg: 131586, host: { suit: 657930, shirt: 16777215, tie: 657930, hat: "chistera" }, hashtag: "#AhoraCaigoFinDeAño", decor: "findeano", saludo: "¡Últimas horas del año! Bienvenidos a la gran gala de Fin de Año." }, { id: "verano", name: "Verano", emoji: "🏖️", wallA: "#0aa6b8", wallB: "#33d6d0", chevA: "#ffb02e", chevB: "#ff6a3a", glow: 16773242, accent: 16742970, fog: 664112, bg: 398880, host: { suit: 16742970, shirt: 2805952, tie: 16769082, hat: "paja", glasses: true }, hashtag: "#AhoraCaigoVerano", decor: "verano", saludo: "¡Qué calor! Bienvenidos al especial de verano de ¡Ahora caigo!" }, { id: "especial300", name: "Especial 300 suscriptores", emoji: "🏆", wallA: "#3a0610", wallB: "#8a0f1c", chevA: "#ffe08a", chevB: "#d4a017", glow: 16765498, accent: 16726858, fog: 655876, bg: 327938, host: { suit: 1315860, shirt: 16777215, tie: 13934615, bowtie: true, hat: "fiesta" }, decor: "especial300", hashtag: "#AhoraCaigo300", banner: "Especial 300 suscriptores · Ikeriano el campeón 2", festivo: true, saludo: "¡Muy buenas noches! Bienvenidos a una gala única: ¡el Especial 300 suscriptores del canal Ikeriano el campeón 2!", extra: ["¡Trescientos suscriptores! Muchísimas gracias a todos los que estáis al otro lado. Este programa va dedicado a vosotros.", "Así que ya sabéis: ¡a jugar, a no venirse abajo… y a por los cuatrocientos!"], despedida: "¡Y hasta aquí el Especial 300 suscriptores! Mil gracias a todos los suscriptores de Ikeriano el campeón 2. ¡Sois los mejores! ¡Nos vemos en el próximo vídeo!", credito: ["Especial 300 suscriptores", ["Dedicado a los suscriptores", "del canal de YouTube", "«Ikeriano el campeón 2»"]] }], xf = (a) => Do.find((e) => e.id === a) || Do[0];
+(function () { // desbloqueo de audio en el primer toque (Android/iOS): reanuda WebAudio y «ceba» un <audio> silencioso
+  const un = () => { try { F.ctx && F.ctx.state !== 'running' && F.ctx.resume(); } catch (e) { } try { const A = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='); A.volume = 0; A.play().catch(() => { }); } catch (e) { } try { window.__EXAC && window.__EXAC() && window.__EXAC().voz && 0; } catch (e) { } };
+  ['pointerdown', 'touchstart', 'touchend', 'keydown', 'click'].forEach(ev => addEventListener(ev, un, { capture: true, passive: true }));
+})();
 function _f(a) {
   let e = 2166136261;
   const t = a.normalize("NFC").trim();
@@ -20076,6 +20080,7 @@ class M2 {
     } catch {
       this.index = {};
     }
+    try { this.pre = await (await fetch(`${Us}voz/fr/${window.__LANG === "it" ? "it" : "es"}/index.json`)).json(); } catch { this.pre = {}; }
   }
   stop() {
     F.stopTag("voz");
@@ -20104,6 +20109,7 @@ class M2 {
         const s = this.index[i] * 1e3, o = F.playUrl(`${Us}voz/${i}.mp3`, 1, "voz").then((r) => r.done);
         return { ms: s, done: o };
       }
+      try { (window.__vozLog = window.__vozLog || []).push((this.index[i] != null ? 'VOZ ' : 'say ') + n); } catch (x) { }
     }
     return this.tts(e[0], t.voz ? t.pitch ?? 1.1 : 0.95, !t.voz);
   }
@@ -20116,6 +20122,15 @@ class M2 {
   }
   tts(e, t = 0.95, n = true) {
     const s = 600 + e.split(/\s+/).length * 330;
+    { // frases fijas pregrabadas con Piper (voz/fr/<idioma>/): suenan siempre, también en el móvil
+      const k2 = _f(String(e).replace(/[«»]/g, ""));
+      if (this.pre && this.pre[k2] != null) {
+        const rate = Math.max(0.8, Math.min(1.25, t / 0.95)); try { (window.__vozLog = window.__vozLog || []).push('PRE ' + e); } catch (x) { }
+        const o = F.playUrl(`${Us}voz/fr/${window.__LANG === "it" ? "it" : "es"}/${k2}.mp3`, 1, "voz", rate).then((r) => r.done);
+        return { ms: this.pre[k2] * 1e3 / rate, done: o };
+      }
+      try { (window.__vozLog = window.__vozLog || []).push('TTS ' + e); } catch (x) { }
+    }
     if (!window.__noPiperTts) try {
       // ¡Ahora caigo!: todo lo que no tiene voz pregrabada se dice con Piper sin conexión (es_ES-davefx / pt_BR-faber)
       if (typeof instalaV115 === "function") instalaV115();
@@ -21250,7 +21265,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.0", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en la app oficial de Caduta Libera (2016)", "Formato original: ¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["La app oficial de Caduta Libera (2016)", "«¡Ahora caigo!»"]], ["Música y sonidos", ["De la app oficial de Caduta Libera"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"]], ["Versión 1.0", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.0.1", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en la app oficial de Caduta Libera (2016)", "Formato original: ¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["La app oficial de Caduta Libera (2016)", "«¡Ahora caigo!»"]], ["Música y sonidos", ["De la app oficial de Caduta Libera"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"]], ["Versión 1.0.1", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -23705,10 +23720,6 @@ async function ii(a, e) {
   EXAC && EXAC.ocioMenu(false);
   if (a === "camlibre") { en("menu").classList.add("hidden"), en("topbar").classList.add("hidden"), F.stopAll(), Mi = false; await camaraLibreAC(); Lt("main"); return; }
   if (EXAC && (a === "programa" || a === "promos" || a === "promoadrian")) EXAC.bugMostrar();
-  if (a === "clasico" && !RC.clasico()) {
-    yn.toast("🎮 El minijuego clásico de Scratch solo está en la versión completa (zip)", 3200);
-    return;
-  }
   if (a === "clasico") {
     const i = en("classic");
     en("menu").classList.add("hidden"), F.stopAll(), Mi = false, en("classicWrap").classList.remove("hidden"), i.src = "clasico_cl/index.html";

@@ -1,0 +1,13 @@
+import puppeteer from 'puppeteer-core';
+const [lang] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 });
+p.on('console', m => { const t = m.text(); if (/voz|piper|tts|audio|voice|error/i.test(t)) console.log('CONSOLE', m.type(), t.slice(0, 200)); });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+p.on('requestfinished', r => { const u = r.url(); if (/voz\/|piper|\.onnx|\.wasm|\.data/.test(u)) console.log('REQ', r.response()?.status(), u.replace('http://localhost:"+(process.env.PORT||8823)+"/', '')); });
+p.on('requestfailed', r => console.log('FAIL', r.url(), r.failure()?.errorText));
+await p.evaluateOnNewDocument(l => { localStorage.setItem('ac_lang', l); window.__noAviso = true; }, lang);
+await p.goto('http://localhost:' + (process.env.PORT || 8823) + '/index.html'); await p.waitForFunction('window.__eng && document.getElementById("loading").classList.contains("hidden")', { timeout: 90000 }).catch(() => console.log('timeout'));
+await new Promise(r => setTimeout(r, 2000)); await p.mouse.click(640, 600); await new Promise(r => setTimeout(r, 2000));
+p.evaluate("setTimeout(()=>__ii('programa'))"); await new Promise(r => setTimeout(r, 60000));
+await p.screenshot({ path: '/workspace/caduta/probe_' + lang + '.png' }); console.log('LOG', JSON.stringify(await p.evaluate(() => window.__vozLog || []), null, 1)); console.log('EST', await p.evaluate(() => document.body.innerText.slice(0, 300).replace(/\n/g, ' | '))); await b.close();

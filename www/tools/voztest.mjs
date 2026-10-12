@@ -1,0 +1,12 @@
+import puppeteer from 'puppeteer-core';
+const [lang] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 720 });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+p.on('requestfinished', r => { const u = r.url(); if (/voz\/fr|piper/.test(u)) console.log('REQ', r.response()?.status(), u.replace(/^.*8823\//, '')); });
+await p.evaluateOnNewDocument(l => { localStorage.setItem('ac_lang', l); }, lang);
+await p.goto('http://localhost:8823/index.html'); await p.waitForFunction('window.__eng', { timeout: 90000 });
+await new Promise(r => setTimeout(r, 3000)); await p.mouse.click(640, 600); await new Promise(r => setTimeout(r, 1500));
+await p.evaluate(() => { const e = [...document.querySelectorAll('button,div,a')].find(x => /^\s*(⚙️?\s*)?(Opzioni|Opciones)\s*$/i.test(x.textContent)); e && e.click(); }); await new Promise(r => setTimeout(r, 1500));
+console.log(await p.evaluate(async () => { const t0 = Date.now(); try { if (typeof instalaV115 === 'function') instalaV115(); const buf = await (window.__EXAC ? window.__EXAC() : EXAC).vozPiper(window.__LANG === 'it' ? 'Buonasera a tutti e benvenuti.' : 'Buenas noches a todos.', 1); return 'piper ok ' + buf.duration.toFixed(2) + 's en ' + (Date.now() - t0) + 'ms'; } catch (e) { return 'piper ERR ' + e.message; } }));
+await b.close();

@@ -97,10 +97,21 @@ function crearExtras(cfg) {
   function piper() {
     if (wkListo) return wkListo;
     wkListo = new Promise((res, rej) => {
-      try { wk = new Worker((cfg.piperBase || 'piper/') + 'piper-worker.js'); } catch (e) { return rej(e); }
-      const to = setTimeout(() => rej(new Error('Piper tarda demasiado')), 90000);
-      wk.onmessage = e => { const d = e.data; if (d.type === 'listo') { clearTimeout(to); res(d.sampleRate); } else if (d.type === 'error' && d.id == null) { clearTimeout(to); rej(new Error(d.msg)); } else if (d.id && pend[d.id]) { const p = pend[d.id]; delete pend[d.id]; d.type === 'audio' ? p.res(d) : p.rej(new Error(d.msg)); } };
-      wk.onerror = e => { clearTimeout(to); rej(new Error(e.message || 'worker')); };
+      const base = new URL(cfg.piperBase || 'piper/', location.href).href;
+      // Android WebView: las peticiones hechas DENTRO de un Worker pueden no pasar por la app, así que el hilo principal
+      // descarga los ficheros de Piper y el Worker los usa como blob: (sin red).
+      const F2 = ['sherpa-onnx-wasm-main-tts.js', 'sherpa-onnx-tts.js', 'sherpa-onnx-wasm-main-tts.wasm', 'sherpa-onnx-wasm-main-tts.data'];
+      Promise.all(F2.map(f => fetch(base + f).then(r => { if (!r.ok) throw new Error(f + ' ' + r.status); return r.blob(); }).then(b => URL.createObjectURL(b)))).then(U => {
+        const M = {}; F2.forEach((f, i) => M[f] = U[i]);
+        const code = `let tts=null;const M=${JSON.stringify(M)};self.Module={locateFile:(p)=>M[p]||p,setStatus:(s)=>self.postMessage({type:'progreso',s}),onRuntimeInitialized:()=>{try{tts=createOfflineTts(self.Module);self.postMessage({type:'listo',sampleRate:tts.sampleRate});}catch(e){self.postMessage({type:'error',msg:String(e&&e.message||e)});}}};importScripts(M['sherpa-onnx-wasm-main-tts.js']);importScripts(M['sherpa-onnx-tts.js']);self.onmessage=(e)=>{const {id,texto,velocidad}=e.data;if(!tts)return self.postMessage({type:'error',id,msg:'no listo'});try{const a=tts.generate({text:texto,sid:0,speed:velocidad||1.0});self.postMessage({type:'audio',id,samples:a.samples,sampleRate:tts.sampleRate},[a.samples.buffer]);}catch(x){self.postMessage({type:'error',id,msg:String(x)});}};`;
+        try { wk = new Worker(URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))); } catch (e) { return rej(e); }
+        engancha();
+      }).catch(rej);
+      const to = setTimeout(() => rej(new Error('Piper tarda demasiado')), 240000);
+      function engancha() {
+        wk.onmessage = e => { const d = e.data; if (d.type === 'listo') { clearTimeout(to); res(d.sampleRate); } else if (d.type === 'error' && d.id == null) { clearTimeout(to); rej(new Error(d.msg)); } else if (d.id && pend[d.id]) { const p = pend[d.id]; delete pend[d.id]; d.type === 'audio' ? p.res(d) : p.rej(new Error(d.msg)); } };
+        wk.onerror = e => { clearTimeout(to); rej(new Error(e.message || 'worker')); };
+      }
     }); wkListo.catch(() => { wkListo = null; }); return wkListo;
   }
   async function vozPiper(texto, vel) { if (window.__LANG === 'it') texto = String(texto).replace(/Ahora caigo/gi, 'Caduta Libera'); await piper(); const id = ++wkId; const d = await new Promise((res, rej) => { pend[id] = { res, rej }; wk.postMessage({ id, texto, velocidad: vel || 1 }); }); const ac = cfg.audioCtx(); const b = ac.createBuffer(1, d.samples.length, d.sampleRate); b.copyToChannel(d.samples, 0); return b; }

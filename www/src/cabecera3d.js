@@ -252,7 +252,7 @@ async function cab3D(hud, sess, theme) {
 }
 window.__cab3D = (id) => cab3D(null, null, Do.find(d => d.id === id) || Do[0]);
 // aviso (solo la primera vez) en la versión web sin músicas: cómo cargarlas desde Opciones
-(function avisoMusicas() {
+(function avisoMusicas() { return; // Caduta Libera: nunca se piden archivos
   const mira = () => {
     const ld = document.getElementById('loading'); if (!window.__eng || !ld || !ld.classList.contains('hidden')) return setTimeout(mira, 800);
     try { if (RC.tieneSonidos() || localStorage.getItem('ac_aviso_musica') || window.__noAviso) return; } catch (e) { return; }
