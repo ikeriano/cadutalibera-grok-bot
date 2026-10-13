@@ -7,6 +7,7 @@ JUEGO="index.html js ep3000 assets voz piper piper_it icon-192.png icon-512.png 
 rm -rf $APK; mkdir -p $APK; cp -rL $JUEGO $APK/
 # APK: voces a 24 kbps mono y sin modelo Piper espanol (frases pre-grabadas) -> APK < 200 MB
 rm -rf $APK/voz $APK/piper; cp -r /workspace/caduta/voz24 $APK/voz
+rm -f $(dirname $APK)/www.pak $(dirname $APK)/www.idx
 mkdir -p $P; find $P -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 mkdir -p $P/www; cp -rL $JUEGO src tools package.json $P/www/
 mkdir -p $P/android; (cd /workspace/caduta/android && tar cf - --exclude=./app/src/main/assets/www --exclude=./app/build --exclude=./.gradle --exclude=./build --exclude=./local.properties .) | (cd $P/android && tar xf -)
@@ -36,3 +37,5 @@ for s in (192, 512):
     im.save(f'{d}/icon-{s}.png')
 PY
 grep -rl "data:image/png;base64\|cl_intro\|bg2.webp" $PUB --include=*.js | head; echo listo
+# APK: todo en www.pak (pocas entradas en el zip)
+python3 /workspace/caduta/www/tools/pak.py $(dirname $APK)

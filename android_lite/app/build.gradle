@@ -9,10 +9,10 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId 'com.ikeriano.cadutalibera.lite'
-        minSdk 21
+        minSdk 19
         targetSdk 34
-        versionCode 4
-        versionName '1.0.3-lite'
+        versionCode 5
+        versionName '1.0.4-lite'
     }
     signingConfigs {
         release {
@@ -23,7 +23,7 @@ android {
                 keyPassword ksProps['keyPassword']
                 enableV1Signing true
                 enableV2Signing true
-                enableV3Signing true
+                enableV3Signing false
             }
         }
     }
@@ -34,6 +34,6 @@ android {
         }
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
-    androidResources { noCompress += ['mp3','mp4','webp','png','onnx'] }
+    androidResources { noCompress += ['mp3','mp4','webp','png','onnx','pak'] }
     lint { abortOnError false; checkReleaseBuilds false }
 }

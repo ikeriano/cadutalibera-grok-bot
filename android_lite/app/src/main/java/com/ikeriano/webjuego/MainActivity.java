@@ -27,6 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 /**
  * WebView wrapper for ¡Ahora Caigo! (rebuild of v1.12).
@@ -37,6 +42,35 @@ public class MainActivity extends Activity {
     private static final String HOST = "appassets.androidplatform.net";
     private static final String ROOT = "www/";
     private static final int REQ_FILE = 4242;
+
+    // Paquete único de recursos (www.pak + www.idx): pocas entradas en el APK, compatible con analizadores antiguos.
+    private static Map<String, long[]> IDX = null;
+    private static FileChannel PAK = null;
+    private static long PAK0 = 0;
+    private synchronized void abrirPak() {
+        if (IDX != null) return;
+        IDX = new HashMap<>();
+        try {
+            BufferedReader r = new BufferedReader(new InputStreamReader(getAssets().open("www.idx"), "UTF-8"));
+            String l; while ((l = r.readLine()) != null) { String[] p = l.split("\t"); if (p.length == 3) IDX.put(p[0], new long[]{Long.parseLong(p[1]), Long.parseLong(p[2])}); }
+            r.close();
+            android.content.res.AssetFileDescriptor fd = getAssets().openFd("www.pak");
+            PAK = new FileInputStream(fd.getFileDescriptor()).getChannel(); PAK0 = fd.getStartOffset();
+        } catch (Exception e) { IDX.clear(); PAK = null; }
+    }
+    /** Lectura posicional del paquete (segura con varias peticiones a la vez). */
+    private static class PakStream extends InputStream {
+        private long pos; private final long end;
+        PakStream(long off, long len) { pos = PAK0 + off; end = pos + len; }
+        @Override public int read() throws IOException { byte[] b = new byte[1]; int n = read(b, 0, 1); return n <= 0 ? -1 : (b[0] & 0xff); }
+        @Override public int read(byte[] b, int off, int len) throws IOException { if (pos >= end) return -1; int n = PAK.read(ByteBuffer.wrap(b, off, (int) Math.min(len, end - pos)), pos); if (n > 0) pos += n; return n; }
+        @Override public long skip(long n) { long k = Math.min(n, end - pos); pos += k; return k; }
+        @Override public int available() { return (int) Math.min(Integer.MAX_VALUE, end - pos); }
+    }
+    private static WebResourceResponse resp(String mime, String enc, int code, String why, Map<String, String> h, InputStream in) {
+        if (Build.VERSION.SDK_INT >= 21) return new WebResourceResponse(mime, enc, code, why, h, in);
+        return new WebResourceResponse(mime, enc, in);
+    }
 
     private WebView web;
     private ValueCallback<Uri[]> fileCb;
@@ -79,6 +113,22 @@ public class MainActivity extends Activity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView v, WebResourceRequest r) {
                 return servir(r.getUrl(), r.getRequestHeaders());
+            }
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public WebResourceResponse shouldInterceptRequest(WebView v, String url) {
+                if (Build.VERSION.SDK_INT >= 21) return null;
+                return servir(Uri.parse(url), null);
+            }
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public boolean shouldOverrideUrlLoading(WebView v, String url) {
+                Uri u = Uri.parse(url);
+                if (HOST.equals(u.getHost())) return false;
+                try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception ignored) { }
+                return true;
             }
 
             @Override
@@ -133,11 +183,16 @@ public class MainActivity extends Activity {
         h.put("Cache-Control", "no-cache");
         h.put("Accept-Ranges", "bytes");
         long len = -1;
-        try { android.content.res.AssetFileDescriptor fd = getAssets().openFd(ROOT + path); len = fd.getLength(); fd.close(); } catch (IOException ignored) { }
         InputStream in;
+        abrirPak();
+        long[] e0 = PAK != null ? IDX.get(path) : null;
+        if (e0 != null) { len = e0[1]; in = new PakStream(e0[0], e0[1]); }
+        else {
+        try { android.content.res.AssetFileDescriptor fd = getAssets().openFd(ROOT + path); len = fd.getLength(); fd.close(); } catch (IOException ignored) { }
         try { in = getAssets().open(ROOT + path, android.content.res.AssetManager.ACCESS_STREAMING); }
         catch (IOException e) {
-            return new WebResourceResponse("text/plain", "utf-8", 404, "Not Found", h, new ByteArrayInputStream(new byte[0]));
+            return resp("text/plain", "utf-8", 404, "Not Found", h, new ByteArrayInputStream(new byte[0]));
+        }
         }
         String enc = mime.startsWith("text/") || mime.contains("javascript") || mime.contains("json") ? "utf-8" : null;
         String range = null;
@@ -150,16 +205,16 @@ public class MainActivity extends Activity {
                 long start, end;
                 if (p[0].isEmpty()) { start = Math.max(0, len - Long.parseLong(p[1].trim())); end = len - 1; }
                 else { start = Long.parseLong(p[0].trim()); end = p.length > 1 && !p[1].trim().isEmpty() ? Math.min(Long.parseLong(p[1].trim()), len - 1) : len - 1; }
-                if (start >= len || start > end) { in.close(); h.put("Content-Range", "bytes */" + len); return new WebResourceResponse(mime, enc, 416, "Range Not Satisfiable", h, new ByteArrayInputStream(new byte[0])); }
+                if (start >= len || start > end) { in.close(); h.put("Content-Range", "bytes */" + len); return resp(mime, enc, 416, "Range Not Satisfiable", h, new ByteArrayInputStream(new byte[0])); }
                 long sk = start; while (sk > 0) { long k = in.skip(sk); if (k <= 0) break; sk -= k; }
                 long n = end - start + 1;
                 h.put("Content-Range", "bytes " + start + "-" + end + "/" + len);
                 h.put("Content-Length", String.valueOf(n));
-                return new WebResourceResponse(mime, enc, 206, "Partial Content", h, new Limitado(in, n));
+                return resp(mime, enc, 206, "Partial Content", h, new Limitado(in, n));
             }
         } catch (Exception ignored) { }
         if (len >= 0) h.put("Content-Length", String.valueOf(len));
-        return new WebResourceResponse(mime, enc, 200, "OK", h, in);
+        return resp(mime, enc, 200, "OK", h, in);
     }
 
     /** InputStream que entrega como máximo n bytes (para respuestas 206). */
