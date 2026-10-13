@@ -40,7 +40,7 @@ grep -rl "data:image/png;base64\|cl_intro\|bg2.webp" $PUB --include=*.js | head;
 # APK: modo 2D transpilado a ES5 (WebView antiguos) + diagnóstico
 python3 /workspace/caduta/lite_compat/build_lite.py /workspace/caduta/www/clasico_cl $APK/clasico_cl
 # APK: modelo de IA comprimido (.onnx.gz) y sonidos del Scratch solo en sb3/snd.js -> APK < 200 MB
-A2=$APK/mc3d; gzip -9 -c $A2/depth-anything-v2-small-q4f16.onnx > $A2/depth-anything-v2-small-q4f16.onnx.gz && rm $A2/depth-anything-v2-small-q4f16.onnx
+A2=$APK/mc3d; [ -f $A2/depth-anything-v2-small-q4f16.onnx ] && gzip -9 -c $A2/depth-anything-v2-small-q4f16.onnx > $A2/depth-anything-v2-small-q4f16.onnx.gz && rm $A2/depth-anything-v2-small-q4f16.onnx || true
 [ -f $APK/sb3/snd.js ] && find $APK/sb3/snd -name '*.mp3' ! -name '419ca907843416e034fb72fd6a79bed3.mp3' -delete 2>/dev/null || true
 find $APK/voz -name '*.mp3' -print0 | xargs -0 -P 16 -I{} sh -c 'ffmpeg -v error -y -i "{}" -ac 1 -ar 16000 -b:a 20k "{}.t.mp3" && mv "{}.t.mp3" "{}"'
 # APK: todo en www.pak (pocas entradas en el zip)
