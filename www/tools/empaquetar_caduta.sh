@@ -37,5 +37,7 @@ for s in (192, 512):
     im.save(f'{d}/icon-{s}.png')
 PY
 grep -rl "data:image/png;base64\|cl_intro\|bg2.webp" $PUB --include=*.js | head; echo listo
+# APK: modo 2D transpilado a ES5 (WebView antiguos) + diagnóstico
+python3 /workspace/caduta/lite_compat/build_lite.py /workspace/caduta/www/clasico_cl $APK/clasico_cl
 # APK: todo en www.pak (pocas entradas en el zip)
 python3 /workspace/caduta/www/tools/pak.py $(dirname $APK)

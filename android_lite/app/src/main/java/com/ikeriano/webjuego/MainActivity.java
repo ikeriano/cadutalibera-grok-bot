@@ -47,6 +47,10 @@ public class MainActivity extends Activity {
     private static Map<String, long[]> IDX = null;
     private static FileChannel PAK = null;
     private static long PAK0 = 0;
+    // Hay que guardar el AssetFileDescriptor y el FileInputStream: si el recolector los libera, su finalizador
+    // cierra el descriptor y todas las lecturas del paquete fallan (pantalla negra al abrir el modo 2D).
+    private static android.content.res.AssetFileDescriptor PAKFD = null;
+    private static FileInputStream PAKIN = null;
     private synchronized void abrirPak() {
         if (IDX != null) return;
         IDX = new HashMap<>();
@@ -54,8 +58,9 @@ public class MainActivity extends Activity {
             BufferedReader r = new BufferedReader(new InputStreamReader(getAssets().open("www.idx"), "UTF-8"));
             String l; while ((l = r.readLine()) != null) { String[] p = l.split("\t"); if (p.length == 3) IDX.put(p[0], new long[]{Long.parseLong(p[1]), Long.parseLong(p[2])}); }
             r.close();
-            android.content.res.AssetFileDescriptor fd = getAssets().openFd("www.pak");
-            PAK = new FileInputStream(fd.getFileDescriptor()).getChannel(); PAK0 = fd.getStartOffset();
+            PAKFD = getAssets().openFd("www.pak");
+            PAKIN = PAKFD.createInputStream();
+            PAK = PAKIN.getChannel(); PAK0 = PAKFD.getStartOffset();
         } catch (Exception e) { IDX.clear(); PAK = null; }
     }
     /** Lectura posicional del paquete (segura con varias peticiones a la vez). */
@@ -63,7 +68,10 @@ public class MainActivity extends Activity {
         private long pos; private final long end;
         PakStream(long off, long len) { pos = PAK0 + off; end = pos + len; }
         @Override public int read() throws IOException { byte[] b = new byte[1]; int n = read(b, 0, 1); return n <= 0 ? -1 : (b[0] & 0xff); }
-        @Override public int read(byte[] b, int off, int len) throws IOException { if (pos >= end) return -1; int n = PAK.read(ByteBuffer.wrap(b, off, (int) Math.min(len, end - pos)), pos); if (n > 0) pos += n; return n; }
+        @Override public int read(byte[] b, int off, int len) throws IOException { if (pos >= end) return -1; int want = (int) Math.min(len, end - pos); int n;
+            try { n = PAK.read(ByteBuffer.wrap(b, off, want), pos); }
+            catch (IOException e) { synchronized (PakStream.class) { PAK.position(pos); n = PAK.read(ByteBuffer.wrap(b, off, want)); } }
+            if (n > 0) pos += n; return n; }
         @Override public long skip(long n) { long k = Math.min(n, end - pos); pos += k; return k; }
         @Override public int available() { return (int) Math.min(Integer.MAX_VALUE, end - pos); }
     }
