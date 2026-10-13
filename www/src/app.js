@@ -19169,6 +19169,7 @@ function Da(a, e, t) {
   return i.position.y = -e / 2 - a * 0.5, n.add(i), n;
 }
 function Rm(a = {}) {
+  if (p3dOn()) return p3dRm(a);
   const e = new Ct({ color: a.color ?? 15265528, emissive: 1713216 }), t = a.shirt != null ? new Ct({ color: a.shirt, emissive: 1118481 }) : e, n = new ft(), i = new ft();
   n.add(i);
   const s = Da(0.085, 0.62, e);
@@ -19189,6 +19190,7 @@ function Rm(a = {}) {
   return d.position.y = 1.5, i.add(d), { root: n, body: i, legL: s, legR: o, armL: l, armR: c, head: u, walkPhase: 0, gesture: 0, gestureType: "", t: Math.random() * 10 };
 }
 function e2(a) {
+  if (p3dOn()) return p3dHost(a);
   const e = new Ct({ color: 15910560, emissive: 2757640 }), t = new Ct({ color: a.suit, emissive: 329487 }), n = new Ct({ color: a.shirt }), i = new Ct({ color: a.tie, emissive: 2232576 }), s = new Ct({ color: 1118481 }), o = new Ct({ color: 3810324 }), r = new ft(), l = new ft();
   r.add(l);
   const c = Da(0.09, 0.62, t);
@@ -19516,7 +19518,7 @@ function s2() {
     for (const Ce of ce) for (let $e = 0; $e < 6; $e++) ge.push(j[Ce * 6 + $e]);
     oe.setIndex(ge), oe.clearGroups(), oe.addGroup(0, 30, 0), oe.addGroup(30, 6, 1);
   }
-  return { torso: e, head: i, arm: r, legsSit: u, legsStand: d, seat: v, sign: oe, acc: { hair: g, hairL: m, cone: x, witch: A, santa: _, trim: w, elf: L, top: D, straw: W, cap: re, mask: de, stem: Be, horns: k, ears: Q } };
+  return { torso: e, head: p3dOn() ? p3dApi().cabezaPublico(t.clone()) : i, arm: r, legsSit: u, legsStand: d, seat: v, sign: oe, acc: { hair: p3dOn() ? p3dPubHair(false) : g, hairL: p3dOn() ? p3dPubHairL(m) : m, cone: x, witch: A, santa: _, trim: w, elf: L, top: D, straw: W, cap: re, mask: de, stem: Be, horns: k, ears: Q } };
 }
 const o2 = [16177080, 15647904, 14724224, 13012062, 10906949, 8212016, 5912098, 15978416], r2 = [1708560, 3021842, 4860952, 8014372, 13146704, 14729344, 9079434, 11026474, 1708560, 3021842], Pi = (a, e) => e[Math.floor(a() * e.length)];
 function Wn(a, e, t = 0.85) {
@@ -19696,6 +19698,7 @@ class v2 {
       this.halves.push(g);
     }
     this.pose(0, true);
+    p3dOn() && p3dPubMontar(this);
   }
   react(e, t = 3, n) {
     if (e === "idle") {
@@ -19770,7 +19773,7 @@ class v2 {
         i && d.join && n >= i.t0 + d.delay && n < i.t1 + d.delay * 0.6 && (p = i.kind), p !== d.kind ? (d.w = Math.max(0, d.w - e * 5), (d.w <= 0.02 || d.kind === "idle") && (d.kind = p)) : d.kind !== "idle" ? d.w = Math.min(1, d.w + e * 5) : d.w = Math.max(0, d.w - e * 5);
         const v = this.idlePose(d, n, this.P1);
         d.kind !== "idle" && d.w > 0 && f2(v, this.reactPose(d, d.kind, n, this.P2), d.w), d.stand += (v.stand - d.stand) * Math.min(1, e * 4.5), t && (d.stand = v.stand), d.lookT -= e, d.lookT < 0 && (d.lookT = 2 + Math.random() * 5, d.hyT = Math.random() < 0.6 ? 0 : (Math.random() - 0.5) * 0.9), d.hy += ((d.kind === "idle" ? d.hyT : 0) - d.hy) * Math.min(1, e * 2.5);
-        const g = d.stand * Dm + v.bob;
+        const g = d.stand * Dm + v.bob; d._v = [v.rxL, v.rzL, v.rxR, v.rzR, v.bob, v.lean];
         co.copy(d.base).multiply(ui.makeTranslation(0, g + Mr, 0)).multiply(os.makeRotationX(v.lean)).multiply(ui.makeTranslation(0, -Mr, 0)), l.setMatrixAt(f, co), Od.copy(co).multiply(ui.makeTranslation(0, a2, 0)).multiply(os.makeRotationFromEuler(ac.set(v.hx, d.hy, 0, "YXZ"))), c.setMatrixAt(f, Od), r.setMatrixAt(f * 2, os.copy(co).multiply(ui.makeTranslation(-Nm, Lm, 0)).multiply(ui.makeRotationFromEuler(ac.set(v.rxL, 0, v.rzL, "XYZ")))), r.setMatrixAt(f * 2 + 1, os.copy(co).multiply(ui.makeTranslation(Nm, Lm, 0)).multiply(ui.makeRotationFromEuler(ac.set(v.rxR, 0, v.rzR, "XYZ"))));
         const m = d.stand > 0.5;
         u.setMatrixAt(f, m ? Um : d.base), h.setMatrixAt(f, m ? os.copy(d.base).multiply(ui.makeTranslation(0, (d.stand - 1) * Dm, 0)) : Um);
@@ -19806,9 +19809,10 @@ class v2 {
   update(e, t, n, i = false) {
     this.t += e, this.frame++, this.cur && this.t > this.cur.t1 + 1.2 && (this.cur = null), Bm.multiplyMatrices(n.projectionMatrix, n.matrixWorldInverse), Om.setFromProjectionMatrix(Bm);
     for (const s of this.halves) s.visible = i || Om.intersectsSphere(s.sphere), s.root.visible = s.visible;
-    this.light(t), !(this.quality === "baja" && this.frame % 2) && this.pose(this.quality === "baja" ? e * 2 : e);
+    this.light(t), !(this.quality === "baja" && this.frame % 2) && (this.pose(this.quality === "baja" ? e * 2 : e), p3dPubPose(this));
   }
   dispose() {
+    this.disposed = true;
     this.root.traverse((e) => {
       var n, i;
       (i = (n = e.geometry) == null ? void 0 : n.dispose) == null || i.call(n);
@@ -19843,9 +19847,9 @@ class y2 {
   setTheme(e) {
     this.gold = false, this.studio && (this.scene.remove(this.studio.root), Fm(this.studio.root));
     for (const t of this.opps) this.scene.remove(t.root);
-    this.player && this.scene.remove(this.player.root), this.host && this.scene.remove(this.host.root), this.theme = e, aplicarPlato(e), this.studio = new Em(e, this.logoUrl, fs), this.scene.add(this.studio.root), this.applyLook(), this.scene.background = new xe(e.bg), this.scene.fog = new Io(e.fog, this.fogDensity()), this.player = Rm({ shirt: 15970842 }), this.scene.add(this.player.root), this.buildLights(), this.buildAudience(), this.host = e2(e.host), this.scene.add(this.host.root), this.opps = [];
+    this.player && this.scene.remove(this.player.root), this.host && this.scene.remove(this.host.root), this.theme = e, aplicarPlato(e), this.studio = new Em(e, this.logoUrl, fs), this.scene.add(this.studio.root), this.applyLook(), this.scene.background = new xe(e.bg), this.scene.fog = new Io(e.fog, this.fogDensity()), this.player = Rm({ shirt: 15970842, p3d: { seed: 'jugador', g: 'm' } }), this.scene.add(this.player.root), this.buildLights(), this.buildAudience(), this.host = e2(e.host), this.scene.add(this.host.root), this.opps = [];
     for (let t = 1; t <= 10; t++) {
-      const n = Rm(castingAspecto(t));
+      const n = Rm({ ...castingAspecto(t), p3d: { seed: (castingNombre(t) || 'rival') + t, g: castingDe(t) ? undefined : (jn[t - 1] || {}).g } });
       this.opps.push(n), this.scene.add(n.root);
     }
     this.resetPositions();
@@ -21265,7 +21269,7 @@ class Z2 {
     this.cur = null, e == null || e.stop();
   }
 }
-const Zt = new Z2(), Ym = "1.0.7", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en la app oficial de Caduta Libera (2016)", "Formato original: ¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["La app oficial de Caduta Libera (2016)", "«¡Ahora caigo!»"]], ["Música y sonidos", ["De la app oficial de Caduta Libera"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"]], ["Versión 1.0.1", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
+const Zt = new Z2(), Ym = "1.0.8", Jr = { hashtag: "#AhoraCaigo", cabecera: ["Juego creado por Iker", "Basado en la app oficial de Caduta Libera (2016)", "Formato original: ¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"], final: [["Juego creado por", ["Iker"]], ["Basado en", ["La app oficial de Caduta Libera (2016)", "«¡Ahora caigo!»"]], ["Música y sonidos", ["De la app oficial de Caduta Libera"]], ["Voces sintéticas genéricas (Piper TTS)", ["Presentador: davefx (CC0)", "Oponentes: sharvard (CC BY 3.0, Univ. de Edimburgo),", "carlfm (dominio público), ald (Unlicense),", "daniela (CC BY-SA 4.0, corpus OpenSLR 61)"]], ["Público de las gradas", ["Maniquíes virtuales", "Aplausos, vítores y «oooh»", "sintetizados por el juego (sin grabaciones)"]], ["Formato original", ["¡Ahora caigo! (Antena 3, España · Canale 5, Italia)"]], ["Versión 1.0.1", ["Etapas 2011-2014, 2015-2017, 2017-2021 y 2021-actual", "Platós de Antena 3 y oscuro copiados de las fotos", "Especiales: 1000, Los 11 fantásticos y Navidad con mayores"]], ["Librerías", ["Three.js (MIT)", "fflate (MIT)"]], ["Agradecimientos", ["A todos los concursantes", "y a ti por jugar"]]], produccion: "Una producción de Iker" }, Vv = () => `${me.presentador} (presentador virtual)`, J2 = () => ["Presentado por: " + Vv(), ...Jr.cabecera];
 function Hv() {
   const a = [["Presentado por", [Vv()]], ...Jr.final], e = [];
   return me.central && e.push(["Concursante central", [me.central + (me.profesion ? " · " + me.profesion : "")]]), e.push(["Oponentes", jn.map((t, n) => `${n + 1}. ${me.rival(n + 1)} · ${t.job}`)]), a.splice(1, 0, ...e), a;
@@ -23401,7 +23405,7 @@ function Lt(a = "main") {
     const b = document.createElement("button");
     b.className = "tbtn" + (document.fullscreenElement ? " sel" : ""), b.textContent = document.fullscreenElement ? "Salir" : "Activar", b.onclick = async (_) => {
       _.stopPropagation(), await YA(), setTimeout(() => Lt("options"), 300);
-    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ...(window.MC3D ? [MC3D.fila()] : []), ...filasV115(), ZA(), HA(() => Lt("gallina")));
+    }, x.appendChild(b), Th && (b.disabled = true, b.textContent = "Siempre (app)"), r.append(filaEtapa(), filaPersonajes(), filaRecursos(), filaPublicidad(), filaCopresentador(), filaCopro(), filaRegidor(), filaApertura(), filaTitulo(), filaVideoCab(), ...(window.MC3D ? [MC3D.fila()] : []), ...filasV115(), ZA(), HA(() => Lt("gallina")));
     const A = document.createElement("p");
     A.className = "mtext", A.textContent = `Rendimiento actual: ${Math.round(Xe.fps)} fps. Si el juego va lento en tu móvil, elige calidad «Baja».`, r.append(g, x, A, Ia("main"));
   } else if (a === "monologos") {

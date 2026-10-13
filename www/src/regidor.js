@@ -65,7 +65,7 @@ function regidorFig(c) {
   if (typeof COPRO !== 'undefined' && COPRO.fig && COPRO.g && COPRO.g.id === 'toni') return COPRO.fig;
   if (REGIDOR.fig) return REGIDOR.fig;
   const { eng: e } = c;
-  const fig = Rm({ shirt: 0x1a1a1a }); e.scene.add(fig.root); fig.root.position.set(-4.4, 0, 11.2);
+  const fig = Rm({ shirt: 0x1a1a1a, p3d: { seed: 'copro-toni', g: 'm' } }); e.scene.add(fig.root); fig.root.position.set(-4.4, 0, 11.2);
   try { e.face(fig, e.host.root.position); } catch (x) { }
   REGIDOR.fig = fig; return fig;
 }

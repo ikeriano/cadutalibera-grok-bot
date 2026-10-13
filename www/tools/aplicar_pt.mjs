@@ -25,9 +25,11 @@ const trad = v => { if (man[v]) return man[v]; if (PT.has(v)) return v;
   if (/<\/?[a-z][^>]*>/i.test(v)) return v.split(/(<[^>]*>)/).map(p => p.startsWith('<') || !/[A-Za-zÁ-ú]{2}/.test(p) ? p : trad(p)).join('');
   return v.split(/(\{[\w.]+\})/).map(p => /^\{[\w.]+\}$/.test(p) || !/[A-Za-zÁ-ú]{2}/.test(p) ? p : frases(p)).join(''); };
 const _ri = src.indexOf('/*PT-INICIO*/'), _rf = src.indexOf('/*PT-FIN*/');
+const _p3d = []; { let i = 0; while ((i = src.indexOf('/*P3D-INICIO*/', i)) >= 0) { const f = src.indexOf('/*P3D-FIN*/', i); _p3d.push([i, f]); i = f; } }
 let out = src; let n = 0, iguales = 0;
 for (const o of [...T].sort((a, b) => b.s - a.s)) {
   if (o.s > _ri && o.e < _rf) { iguales++; continue; }
+  if (_p3d.some(([i, f]) => o.s > i && o.e < f)) { iguales++; continue; }
   const t = trad(o.v); if (t === o.v) { iguales++; continue; } n++;
   const rep = o.t === 'L' ? JSON.stringify(t) : t.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
   out = out.slice(0, o.s) + rep + out.slice(o.e);

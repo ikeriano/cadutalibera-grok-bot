@@ -58,11 +58,11 @@ function exUtileria(e, lugar) {
     for (let k = 0; k < 10; k++) { const b = new T.Mesh(new T.SphereGeometry(0.05, 8, 6), new T.MeshBasicMaterial({ color: 0xfff2c0 })); const a = k / 10; b.position.set(k < 5 ? -0.75 : 0.75, 1.1 + (k % 5) * 0.22, -0.78); G.add(b); }
     const mesa = new T.Mesh(new T.BoxGeometry(1.6, 0.08, 0.5), L(0xf4f4f8, 0x202024)); mesa.position.set(0, 0.85, -0.6); G.add(mesa);
     const silla = new T.Mesh(new T.CylinderGeometry(0.25, 0.25, 0.5, 14), L(0x1a1a1e)); silla.position.set(0, 0.25, 0.1); G.add(silla);
-    extra = Rm({ shirt: 0xff5aa0 }); extra.root.position.set(x + 0.75, y, z + 0.3); e.scene.add(extra.root);
+    extra = Rm({ shirt: 0xff5aa0, p3d: { seed: 'copro-nuria', g: 'f' } }); extra.root.position.set(x + 0.75, y, z + 0.3); e.scene.add(extra.root);
   } else if (lugar === 'control') {
     for (let r = 0; r < 2; r++) for (let q = 0; q < 4; q++) { const m = new T.Mesh(new T.PlaneGeometry(0.62, 0.38), new T.MeshBasicMaterial({ color: [0x2a6aff, 0x1a8a4a, 0x8a2aff, 0xff7a1a][(q + r) % 4] })); m.position.set(-0.99 + q * 0.66, 1.2 + r * 0.42, -0.8); G.add(m); }
     const mesa = new T.Mesh(new T.BoxGeometry(2.8, 0.75, 0.6), L(0x2a2a30)); mesa.position.set(0, 0.38, -0.4); G.add(mesa);
-    extra = Rm({ shirt: 0x2a2a34 }); extra.root.position.set(x - 0.7, y, z + 0.2); e.scene.add(extra.root);
+    extra = Rm({ shirt: 0x2a2a34, p3d: { seed: 'copro-rober', g: 'm' } }); extra.root.position.set(x - 0.7, y, z + 0.2); e.scene.add(extra.root);
   }
   e.scene.add(G); e.host.root.position.set(x + (lugar === 'control' ? 0.4 : 0), y, z + 0.1); e.face(e.host, new P(x, y, z + 6)); extra && e.face(extra, e.host.root.position);
   return { G, extra, centro: new P(x, y, z), quitar() { e.scene.remove(G); extra && e.scene.remove(extra.root); } };
@@ -114,7 +114,7 @@ async function copresentador(n, ses, o = {}) {
   mec('copresentador ' + g.id + (o.ctx ? ' · ' + o.ctx : ''));
   let fig, origen, temporal = false, nombre = g.nombre;
   if (g.tipo === 'concursante') { const k = exAzar(vis); fig = e.opps[k]; origen = fig.root.position.clone(); nombre = me.rival(k + 1) + ' · concursante'; }
-  else { fig = Rm({ shirt: g.shirt }); temporal = true; e.scene.add(fig.root); origen = new P(g.tipo === 'publico' ? -2.6 : 3.2, 0, 10.5); fig.root.position.copy(origen); }
+  else { fig = Rm({ shirt: g.shirt, p3d: { seed: 'copro-' + (g.id || g.nombre), g: g.voz === 'daniela' || /^(lola|nuria|carmen)/i.test(g.id || g.nombre || '') ? 'f' : 'm' } }); temporal = true; e.scene.add(fig.root); origen = new P(g.tipo === 'publico' ? -2.6 : 3.2, 0, 10.5); fig.root.position.copy(origen); }
   const hp = h.root.position.clone();
   try {
     Ot.wide(e, 1); He(h, 'saluda', 2); await exAdrian(i, ses, exAzar(C.invita)); ze.aplauso(3, 0.6);

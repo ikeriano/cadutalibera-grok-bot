@@ -41,7 +41,7 @@ async function mc3dRecrearAC(pl, op) {
   const r0 = eng.host.root.visible, l0 = eng.player.root.visible; eng.host.root.visible = true; eng.player.root.visible = false;
   eng.opps.forEach(o => o.root.visible = true);
   try { F.stopMusic(0.3); } catch (e) { }
-  const au = MC3D.pista(op.audio, pl.vel), now = () => au.t();
+  const au = MC3D.pista(op.audio, pl.vel), now = () => au.t(); let paraSint = null; try { if (op.sintoniaJuego) paraSint = op.sintoniaJuego(); } catch (e) { }
   let logo = null;
   try {
     hud.hashtag(pl.hashtag || (eng.theme && eng.theme.hashtag) || Jr.hashtag);
@@ -69,7 +69,7 @@ async function mc3dRecrearAC(pl, op) {
       } finally { clearInterval(iv); }
     });
   } finally {
-    au.parar(); if (logo) logo.dispose(); eng.override = null; hud.clearLowerThirds();
+    au.parar(); try { paraSint && paraSint(); } catch (e) { } if (logo) logo.dispose(); eng.override = null; hud.clearLowerThirds();
     eng.host.root.visible = r0; eng.player.root.visible = l0; eng.lookEvent('intro');
     if (propia) {
       if (tema0) { eng.setTheme(tema0); Ii(); }
@@ -77,4 +77,7 @@ async function mc3dRecrearAC(pl, op) {
     }
   }
 }
-if (window.MC3D) MC3D.config({ recrear: mc3dRecrearAC, creditos: () => J2(), hashtag: esp => { const th = esp && Do.find(x => x.id === esp); return th ? th.hashtag || null : null; } });
+if (window.MC3D) MC3D.config({ recrear: mc3dRecrearAC,
+  // vídeo sin sonido: suena la sintonía de la cabecera del juego (mp3 cargado o sintetizada)
+  sintonia: () => { try { return RC.cab3dUrl && RC.cab3dUrl() || null; } catch (e) { return null; } },
+  sintoniaJuego: () => { try { F.ctx.state === 'suspended' && F.ctx.resume(); const gm = F.ctx.createGain(); gm.gain.value = (To.mute ? 0 : Math.max(0, Math.min(1, To.vol))) * 0.55; gm.connect(F.ctx.destination); cabSynth(F.ctx, gm); return () => { try { gm.gain.setTargetAtTime(0, F.ctx.currentTime, 0.2); setTimeout(() => gm.disconnect(), 900); } catch (e) { } }; } catch (e) { return null; } }, creditos: () => J2(), hashtag: esp => { const th = esp && Do.find(x => x.id === esp); return th ? th.hashtag || null : null; } });

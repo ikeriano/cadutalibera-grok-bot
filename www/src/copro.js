@@ -110,7 +110,7 @@ async function coproEntra(c) {
   const { eng: e, hud: i, s } = c, h = e.host;
   let g = (typeof COPRO_APERTURA !== 'undefined' && COPRO_APERTURA) || exAzar(COPRO_DATOS); COPRO_APERTURA = null; if (typeof window.__coproForce === 'string') g = COPRO_DATOS.find(x => x.id === window.__coproForce) || g;
   COPRO.g = g; COPRO.dicho = {}; mec('presentador sorpresa ' + g.id);
-  const fig = Rm({ shirt: g.shirt }); e.scene.add(fig.root); COPRO.fig = fig;
+  const fig = Rm({ shirt: g.shirt, p3d: { seed: 'copro-' + g.id, g: /^(lola|nuria|carmen)$/.test(g.id) ? 'f' : 'm' } }); e.scene.add(fig.root); COPRO.fig = fig;
   const origen = new P(g.quien === 'pub' ? -2.6 : 3.2, 0, 10.5); fig.root.position.copy(origen);
   const off = new P(1.15, 0, 0.5);
   Ot.wide(e, 1); He(h, 'saluda', 2); await exAdrian(i, s, g.adrian); ze.aplauso(3.5, 0.7); i.toast('🎤 Presentador sorpresa: ' + g.nombre, 3000);

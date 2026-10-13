@@ -14,5 +14,5 @@ grep '^import ' src/pre.js > tmp/all.js
 cat tmp/gen.js >> tmp/all.js
 grep -v '^import ' src/pre.js >> tmp/all.js
 cat src/etapas_datos.js src/bancos_acerte.js >> tmp/all.js
-cat src/app.js src/preguntas_extra.js src/post.js src/etapas_clasicas.js src/cabecera3d.js src/promos.js src/recursos.js src/showtime_datos.js src/showtime.js src/extras_datos.js src/extras.js src/extras_datos2.js src/extras_datos3.js src/copro.js src/copro_charla.js src/regidor.js src/v114.js src/escenas_ac.js src/camlibre_ac.js src/extras_comunes.js src/v115.js src/promo_cabecera.js src/sketch_arturo.js src/acerte_set.js src/idioma.js src/acerte_v11.js src/final3d.js src/mc3d_ac.js >> tmp/all.js
+cat src/app.js src/preguntas_extra.js src/post.js src/etapas_clasicas.js src/cabecera3d.js src/promos.js src/recursos.js src/showtime_datos.js src/showtime.js src/extras_datos.js src/extras.js src/extras_datos2.js src/extras_datos3.js src/copro.js src/copro_charla.js src/regidor.js src/v114.js src/escenas_ac.js src/camlibre_ac.js src/extras_comunes.js src/v115.js src/promo_cabecera.js src/sketch_arturo.js src/acerte_set.js src/idioma.js src/acerte_v11.js src/final3d.js src/mc3d_ac.js src/personas3d.js src/personas3d_rb.js src/personas3d_ac.js >> tmp/all.js
 node_modules/.bin/esbuild tmp/all.js --bundle --minify --charset=utf8 --format=iife --outfile=js/app.js --log-level=warning
