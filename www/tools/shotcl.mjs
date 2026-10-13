@@ -1,0 +1,16 @@
+import puppeteer from 'puppeteer-core';
+const [base, out, lang = 'it', W = 600, H = 960] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
+const p = await b.newPage(); await p.setViewport({ width: +W, height: +H });
+p.on('pageerror', e => console.log('PAGEERROR', e.message));
+await p.evaluateOnNewDocument(l => { localStorage.setItem('ac_lang', l); localStorage.setItem('cl_prof', JSON.stringify({ n: 'Iker', g: 'm', pic: null })); localStorage.setItem('cl_dia', '200'); }, lang);
+await p.goto(base + '/clasico_cl/index.html'); await new Promise(r => setTimeout(r, 1500));
+const w = (ms) => new Promise(r => setTimeout(r, ms)); const s = async (n, ms = 0) => { await w(ms); await p.screenshot({ path: `${out}-${n}.png` }); };
+await s('1menu');
+await p.evaluate(() => __CL.apriProfilo(false)); await s('2profilo', 400);
+await p.evaluate(() => __CL.nuovaPartita()); await s('3board', 1500); await s('4ancora', 4500);
+await p.evaluate(() => { __CL.G.opp[2].out = true; __CL.G.opp[6].out = true; __CL.G.round = 2; __CL.G.bank = 15000; __CL.board(true); }); await s('5board2', 1200);
+await p.evaluate(() => __CL.duello(0)); await s('6duello', 3500); await p.type('#kb', 'AB'); await s('7duello2', 600);
+await p.evaluate(() => { __CL.D.end = true; __CL.caduta('opp'); }); await s('8caduta0', 1500); await s('9caduta1', 1700); await s('10caduta2', 1600); await s('11caduta3', 3500);
+await p.evaluate(() => { __CL.duello(1); }); await w(2500); await p.evaluate(() => { __CL.D.end = true; __CL.caduta('me'); }); await s('12perde', 3800);
+await b.close();

@@ -23722,7 +23722,7 @@ async function ii(a, e) {
   if (EXAC && (a === "programa" || a === "promos" || a === "promoadrian")) EXAC.bugMostrar();
   if (a === "clasico") {
     const i = en("classic");
-    en("menu").classList.add("hidden"), F.stopAll(), Mi = false, en("classicWrap").classList.remove("hidden"), i.src = "clasico_cl/index.html";
+    en("menu").classList.add("hidden"), F.stopAll(), Mi = false, en("classicWrap").classList.remove("hidden"), i.src = "clasico_cl/index.html?v=1.0.2";
     return;
   }
   jt && (jt.alive = false);

@@ -1,0 +1,10 @@
+import puppeteer from 'puppeteer-core';
+const [url, out] = process.argv.slice(2);
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const p = await b.newPage(); await p.setViewport({ width: 900, height: 1400, isMobile: true, hasTouch: true });
+await p.goto(url); await p.waitForFunction('window.__eng', { timeout: 90000 }); await new Promise(r => setTimeout(r, 3000));
+await p.screenshot({ path: out + '-0.png' });
+await p.touchscreen.tap(450, 1100); await new Promise(r => setTimeout(r, 2500));
+await p.screenshot({ path: out + '-1.png' });
+console.log(await p.evaluate(() => [...document.querySelectorAll('#menu button, #menu [onclick], #menu .mbtn, #menu div')].filter(e => e.children.length < 3 && e.textContent.trim()).map(e => e.textContent.trim().slice(0, 40)).slice(0, 60).join(' | ')));
+await b.close();
