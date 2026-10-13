@@ -21282,7 +21282,7 @@ class K2 {
     return this.used.add(s.t), s.t;
   }
 }
-const eA = (a) => a[Math.floor(Math.random() * a.length)], Nt = { sube: ["¡Concursante, sube a la trampilla central!", "¡Adelante! Ponte en el centro del plató, encima de la trampilla."], equipo: "¡Aquí están nuestros diez oponentes! Tienes que tirar a ocho de ellos para llegar al final.", elige: ["¡Elige una huella! Detrás de cada huella hay un oponente.", "Muy bien… ¿a quién retas ahora? ¡Elige huella!"], elegidoT: ["¡Has elegido al oponente número {n}!", "¡El {n}! Vamos a ver qué sabe…", "Oponente {n}, ¡al duelo!"], ok: ["¡Correcto!", "¡Muy bien!", "¡Lo has clavado!"], pasa: ["¡Pasa! Turno de tu oponente…", "Usas un comodín: ¡pasa la pregunta!"], tiempo: ["¡Se acabó el tiempo…!", "¡Oh, no! ¡Tiempo!"], turnoBot: ["Empieza contestando el oponente {n}. ¡Cada uno con su reloj!", "Primero contesta el oponente {n}. ¡Atentos al reloj!"], turnoTu: ["¡Empiezas tú! Cada uno tiene su reloj."], pasaSin: ["¡Pasas! Otra pregunta… ¡y tu reloj sigue corriendo!", "Pasas sin comodín: ¡el reloj no se para!"], botTiempo: ["¡Al oponente {n} se le ha acabado el tiempo!", "¡Tiempo para el oponente {n}!"], trDuelo: "Entrenamiento de duelo: tú contra un oponente, por turnos y cada uno con su reloj. ¡Sin caídas!", trDueloWin: "¡Has ganado el duelo! En el programa, tu oponente habría caído por la trampilla.", trDueloLose: "Esta vez ha ganado el oponente. ¡Prueba otra vez!", cero: "Has tirado a los ocho… pero tu marcador está a cero. ¡Qué mala suerte!", plantas: "¡Te plantas! Te llevas la mitad de tus puntos.", final: "¡Desafío Final! Diez preguntas en dos minutos. Si lo consigues, ¡doblas tu marcador!", ganado: "¡¡Has ganado!! ¡Doblas tu marcador!", explBienvenida: "¡Bienvenido al plató! Date una vuelta. Puedes subir a la mesa central y a los atriles.", explReto: "¿Te atreves con un programa completo? ¡Pulsa el menú y elige «Programa completo»!", trFinal: "Entrenamiento del Desafío Final: diez preguntas en dos minutos. ¡Sin caídas!", trFinalOk: "¡Perfecto! Has completado el Desafío Final.", trFinalT: "Se acabó el tiempo: has acertado {n} de diez. ¡Sigue practicando!", trGallina: "¡Palabra musical! Completa la letra de la canción.", trPruebas: "Entrenamiento de pruebas: escribe las letras que faltan. ¡Sin caídas!", trHuellas: "Practica la elección de huellas y la moneda. ¡Nadie cae!", trHuellaT: "Has elegido la huella {n}.", trHuellasFin: "¡Mira cuántos puntos has conseguido en el entrenamiento!" }, Ua = (a) => eA(a), Gu = (a, e) => a.replace("{n}", String(e));
+const eA = (a) => a[Math.floor(Math.random() * a.length)], Nt = { sube: ["¡Concursante, sube a la trampilla central!", "¡Adelante! Ponte en el centro del plató, encima de la trampilla."], equipo: "¡Aquí están nuestros diez oponentes! Tienes que tirar a ocho de ellos para llegar al final.", elige: ["¡Elige una huella! Detrás de cada huella hay un oponente.", "Muy bien… ¿a quién retas ahora? ¡Elige huella!"], elegidoT: ["¡Has elegido al oponente número {n}!", "¡El {n}! Vamos a ver qué sabe…", "Oponente {n}, ¡al duelo!"], ok: ["¡Correcto!", "¡Muy bien!", "¡Lo has clavado!"], pasa: ["¡Pasa! Turno de tu oponente…", "Usas un comodín: ¡pasa la pregunta!"], tiempo: ["¡Se acabó el tiempo…!", "¡Oh, no! ¡Tiempo!"], turnoBot: ["Empieza contestando el oponente {n}. ¡Cada uno con su reloj!", "Primero contesta el oponente {n}. ¡Atentos al reloj!"], turnoTu: ["¡Empiezas tú! Cada uno tiene su reloj."], pasaSin: ["¡Pasas! Otra pregunta… ¡y tu reloj sigue corriendo!", "Pasas sin comodín: ¡el reloj no se para!"], botTiempo: ["¡Al oponente {n} se le ha acabado el tiempo!", "¡Tiempo para el oponente {n}!"], trDuelo: "Entrenamiento de duelo: tú contra un oponente, por turnos y cada uno con su reloj. ¡Sin caídas!", trDueloWin: "¡Has ganado el duelo! En el programa, tu oponente habría caído por la trampilla.", trDueloLose: "Esta vez ha ganado el oponente. ¡Prueba otra vez!", cero: "Has tirado a los ocho… pero tu marcador está a cero. ¡Qué mala suerte!", plantas: "¡Te plantas! Te llevas la mitad de tus puntos.", final: "¡Desafío Final! Diez preguntas en dos minutos. Si las aciertas todas antes de que acabe el tiempo, ¡te llevas el dinero acumulado! Si no, la trampilla se abre.", ganado: "¡¡Has ganado!! ¡Te llevas todo el dinero acumulado!", explBienvenida: "¡Bienvenido al plató! Date una vuelta. Puedes subir a la mesa central y a los atriles.", explReto: "¿Te atreves con un programa completo? ¡Pulsa el menú y elige «Programa completo»!", trFinal: "Entrenamiento del Desafío Final: diez preguntas en dos minutos. ¡Sin caídas!", trFinalOk: "¡Perfecto! Has completado el Desafío Final.", trFinalT: "Se acabó el tiempo: has acertado {n} de diez. ¡Sigue practicando!", trGallina: "¡Palabra musical! Completa la letra de la canción.", trPruebas: "Entrenamiento de pruebas: escribe las letras que faltan. ¡Sin caídas!", trHuellas: "Practica la elección de huellas y la moneda. ¡Nadie cae!", trHuellaT: "Has elegido la huella {n}.", trHuellasFin: "¡Mira cuántos puntos has conseguido en el entrenamiento!" }, Ua = (a) => eA(a), Gu = (a, e) => a.replace("{n}", String(e));
 function _h(a, e) {
   const t = Math.floor(Math.random() * hh[a].length), n = me.rival(e), i = _r(hh[a][t], n, e), s = Gu(Nt[a][t], e);
   return { bubble: i, audio: me.esDef(e) ? [i, s] : [s] };
@@ -22651,7 +22651,7 @@ class sy {
       const f = Wd(this.c);
       await s.w(420), e.setGoldSet(true), (h = e.lights) == null || h.event("final"), await f;
     }
-    F.playMusic("TemaCurto"), e.opps.forEach((f) => f.root.visible && He(f, "arriba", 1.5)), ze.vitores(3.5), e.startOrbit($t(0, 0, 0), 10.5, 4.8, 0, 0.06, 1), await s.w(2e3), await s0(this.c, "GcDueloFinal", 2500), Ot.player(e, 1.5), await this.joke("final"), t.say(Nt.final, 4e3), await s.w(2500);
+    F.playMusic("TemaCurto"), e.opps.forEach((f) => f.root.visible && He(f, "arriba", 1.5)), ze.vitores(3.5), e.startOrbit($t(0, 0, 0), 10.5, 4.8, 0, 0.06, 1), await s.w(2e3), (window.__jfTitulo ? await window.__jfTitulo() : await s0(this.c, "GcDueloFinal", 2500)), Ot.player(e, 1.5), await this.joke("final"), t.say(Nt.final, 4e3), await s.w(2500);
     const o = [];
     for (let f = 0; f < 10; f++) o.push(this.bank.next("normal"));
     await s.w(1500), F.playMusic("SuspenseDuelo", true), this.vidas = 0, Pn(-1, false), await s.w(1500), e.studio.setHoleColor(0, 16765498);
@@ -22675,9 +22675,9 @@ class sy {
         else return clearInterval(u), n.hide("PlacarFinal", 300), window.__acFin && window.__acFin(), await this.perder(), false;
       }
     } finally {
-      clearInterval(u), F.stopTag("clock");
+      clearInterval(u), F.stopTag("clock"), window.__jfClock = null;
     }
-    return i.hideAll(500), n.hide("PlacarFinal", 300), await s.w(1e3), this.placar *= 2, F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (d = e.lights) == null || d.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), t.say(Nt.ganado, 4e3), await s.w(1500), await uu(this.c, this.placar, 6e3, true), true;
+    return i.hideAll(500), n.hide("PlacarFinal", 300), await s.w(1e3), F.stopAll(), F.playMusic("TrilhaCurta@Stage"), (d = e.lights) == null || d.event("ganador"), ea(e.studio, $t(0, Ae + 1, 0)), ea(e.studio, $t(-3, 2, -3)), ea(e.studio, $t(3, 2, -3)), He(e.player, "arriba", 3), He(e.host, "aplaude", 3), Ot.player(e, 1.2), ze.ovacion(8), t.say(Nt.ganado, 4e3), await s.w(1500), await uu(this.c, this.placar, 6e3, true), true;
   }
   async fin(e) {
     var r;
@@ -22711,7 +22711,7 @@ async function LA(a, e, t) {
     return;
   }
   if (Ot.player(n), n.cut(new P(1.2, Ae + 2.4, 4.4), new P(0, Ae + 0.7, 0)), F.playMusic("SuspenseDuelo", true, 0.6), h(), e === "final") {
-    i.say(Nt.trFinal, 3500), await s.w(3e3);
+    i.say(Nt.trFinal, 3500), window.__jfTitulo && await window.__jfTitulo(), await s.w(800);
     const d = [];
     for (let m = 0; m < 10; m++) d.push(r.bank.next("normal"));
     const f = { left: 120 }, p = performance.now() + 2300;
@@ -22735,7 +22735,7 @@ async function LA(a, e, t) {
         h(), await s.w(m === "ok" ? 900 : 200);
       }
     } finally {
-      clearInterval(v), F.stopTag("clock");
+      clearInterval(v), F.stopTag("clock"), window.__jfClock = null;
     }
     a.st.hide("PlacarFinal"), o.hideAll(300), i.say(g === 10 ? Nt.trFinalOk : Gu(Nt.trFinalT, g), 5e3), He(n.host, g === 10 ? "aplaude" : "habla", 2.5), await s.w(5e3);
     return;
@@ -23429,7 +23429,7 @@ function Lt(a = "main") {
 <p><b>3. ¡Ahora cae!</b> El primero que se queda sin tiempo cae por su trampilla: si es tu oponente, sigues; si eres tú… ¡adiós!</p>
 <p><b>PASAR:</b> empiezas con 2 comodines. Con un comodín, «PASAR» le manda esa pregunta a tu oponente. Sin comodines, te sale otra pregunta pero tu reloj sigue corriendo. En el Desafío Final, «PASAR» salta a la siguiente pregunta y los 2 minutos siguen corriendo.</p>
 <p><b>4. La moneda.</b> Tras cada duelo ganado eliges un lado de la moneda: puedes ganar puntos, una vida extra… o perderlo todo, el doble o la mitad.</p>
-<p><b>5. La decisión.</b> Si derribas a los 10 oponentes puedes <b>plantarte</b> (te llevas la mitad) o jugar el <b>Desafío Final</b>: 10 preguntas en 2 minutos. Si las aciertas todas, ¡doblas tu marcador!</p>
+<p><b>5. La decisión.</b> Si derribas a los 10 oponentes puedes <b>plantarte</b> (te llevas la mitad) o jugar el <b>Desafío Final</b>: 10 preguntas en 2 minutos. Si las aciertas todas antes de que acabe el tiempo, ¡te llevas el dinero acumulado!; si no, caes por la trampilla.</p>
 <p><b>Controles 3D:</b> joystick a la izquierda para andar, arrastra a la derecha para mirar (PC: WASD + ratón). 👁 cambia entre primera y tercera persona. ☰ vuelve al menú. «Saltar» pasa la cabecera y la despedida.</p>`, r.append(u);
   } else if (a === "credits") {
     r.classList.add("text"), r.append(Ia("main"), Pa("Créditos"));
@@ -23722,7 +23722,7 @@ async function ii(a, e) {
   if (EXAC && (a === "programa" || a === "promos" || a === "promoadrian")) EXAC.bugMostrar();
   if (a === "clasico") {
     const i = en("classic");
-    en("menu").classList.add("hidden"), F.stopAll(), Mi = false, en("classicWrap").classList.remove("hidden"), i.src = "clasico_cl/index.html?v=1.0.2";
+    en("menu").classList.add("hidden"), F.stopAll(), Mi = false, en("classicWrap").classList.remove("hidden"), i.src = "clasico_cl/index.html?v=1.0.3";
     return;
   }
   jt && (jt.alive = false);

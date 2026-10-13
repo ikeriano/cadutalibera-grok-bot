@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Caduta Libera · Classico</title>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:"Arial Black",Arial,sans-serif;color:#fff;-webkit-user-select:none;user-select:none}
+#st{position:absolute;left:50%;top:50%;width:540px;height:960px;transform-origin:0 0;overflow:visible;background:#000}
+.l{position:absolute}.sp{position:absolute;pointer-events:none}.bt{cursor:pointer;pointer-events:auto}
+.scr{position:absolute;inset:0;display:none;overflow:visible}.scr.on{display:block}
+.bg{position:absolute;left:-100px;top:-100px;width:740px;height:1160px}
+.head{position:absolute;border-radius:50%;background-size:cover;background-position:center}
+.txt{position:absolute;text-align:center;text-shadow:0 2px 3px #000}
+#tiles{position:absolute;left:10px;right:10px;top:430px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.tile{width:39px;height:55px;background:url(img/letters_sprite_hd/letters_blank.webp) center/100% 100%;color:#1a2a55;font:900 30px/57px Arial;text-align:center}
+.tile.sp0{background:none;width:18px}.tile.rv{color:#0a3aa8}.tile.typed{color:#b0122a}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+#kb{position:absolute;opacity:0;left:0;top:500px;width:10px;height:10px}
+.prz{position:absolute;cursor:default}
+#ring .slot{position:absolute;width:100px;height:103px;cursor:pointer}
+.spin{animation:sp 2.5s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.btn2{position:absolute;padding:12px 18px;border-radius:30px;background:linear-gradient(#ffd84a,#e39a00);color:#3a1d00;font-weight:900;text-align:center;cursor:pointer;border:3px solid #7a4a00;box-shadow:0 3px 8px #000}
+input.nm{position:absolute;left:150px;top:490px;width:240px;height:36px;border:0;background:none;color:#fff;font:bold 22px Arial;text-align:center;outline:none}
+#gfT{position:absolute;left:-40px;right:-40px;top:770px;text-align:center;font:900 76px/1 "Arial Black",Arial,sans-serif;letter-spacing:2px;background:linear-gradient(#fff 0%,#fff1c8 45%,#e9b97a 56%,#fff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 0 #7a4a10) drop-shadow(0 8px 10px rgba(0,0,0,.7));animation:gfIn 3.4s ease both}
+@keyframes gfIn{0%{opacity:0;transform:scale(1.7)}14%{opacity:1;transform:scale(1)}86%{opacity:1}100%{opacity:0}}
+.gfc{position:absolute;width:50px;height:50px;border-radius:50%;background:radial-gradient(#9aa0aa,#3a3e46);border:3px solid #c8ccd4;box-shadow:0 2px 4px #000;transition:all .3s}
+.gfc svg{width:100%;height:100%}.gfc.on{background:radial-gradient(#ffe68a,#d08a00);border-color:#fff3b0;box-shadow:0 0 14px #ffd23a}
+.gfk{position:absolute;cursor:pointer;pointer-events:auto}.gfk.on{filter:brightness(1.4) sepia(1) saturate(4) hue-rotate(5deg)}
+#gfPass{position:absolute;left:400px;top:858px;width:110px;height:40px;font:900 24px/40px Arial;color:#fff;text-align:center;background:linear-gradient(#b07038,#5a2c0a);border:2px solid #fff;border-radius:4px;cursor:pointer;letter-spacing:1px;box-shadow:0 2px 0 #2a1200}
+#gfBk{position:absolute;left:300px;top:858px;width:80px;height:40px;font:900 24px/40px Arial;color:#fff;text-align:center;background:linear-gradient(#6a6e78,#2a2c32);border:2px solid #ddd;border-radius:4px;cursor:pointer}
+</style></head><body>
+<div id="st">
+ <!-- BENVENUTO -->
+ <div class="scr" id="sMenu"><img class="bg" src="img/bg1.webp"><div id="acLogo" style="display:none;position:absolute;left:84px;top:-2px;width:372px;height:280px;background:radial-gradient(#0a2a7a 55%,rgba(0,40,140,0) 72%)"><img id="acLogoI" style="width:100%;height:100%;object-fit:contain"></div>
+  <img class="sp bt" id="mPlay" data-k="screen1_sprite_hd/button1_play">
+  <img class="sp bt" id="mProf" data-k="screen1_sprite_hd/button_profile">
+  <img class="sp bt" id="mInfo" data-k="screen1_sprite_hd/button_instructions">
+  <img class="sp bt" id="mAch" data-k="screen1_sprite_hd/button_achievment"><img class="sp bt" id="mStat" data-k="screen1_sprite_hd/button_statistics"><img class="sp bt" id="mSnd" src="img/screen1_sprite_hd/button_sound_on.webp" style="left:356px;top:776px;width:110px">
+  <div class="txt" style="left:0;right:0;top:860px;font-size:16px;opacity:.8" id="mBest"></div>
+ </div>
+ <!-- PROFILO -->
+ <div class="scr" id="sProf"><img class="bg" src="img/bg1.webp">
+  <img class="sp" data-k="screen1_sprite_hd/manage_frame">
+  <div class="head" id="pPic" style="left:196px;top:93px;width:150px;height:150px"></div>
+  <img class="sp" data-k="screen1_sprite_hd/manage_avatar_frame">
+  <img class="sp bt" id="pCam" data-k="screen1_sprite_hd/manage_button_camera">
+  <img class="sp bt" id="pClose" data-k="screen1_sprite_hd/manage_button_close">
+  <div class="txt" style="left:100px;width:340px;top:330px;font-size:15px;opacity:.75" id="pLocal"></div>
+  <div class="txt" style="left:0;right:0;top:440px;font-size:20px" id="pNameL"></div>
+  <img class="sp" data-k="screen1_sprite_hd/manage_textbox_name_blank"><input class="nm" id="pName" maxlength="12">
+  <div class="txt" style="left:0;right:0;top:590px;font-size:20px" id="pGenL"></div>
+  <img class="sp bt" id="pW" data-k="screen1_sprite_hd/manage_button_gender_woman_off"><img class="sp bt" id="pM" data-k="screen1_sprite_hd/manage_button_gender_man_off">
+  <div class="btn2" id="pOk" style="left:190px;top:790px;width:120px">OK</div>
+  <input type="file" id="pFile" accept="image/*" style="display:none">
+ </div>
+ <!-- TABELLONE -->
+ <div class="scr" id="sBoard"></div>
+ <!-- DUELLO -->
+ <div class="scr" id="sDuel"></div>
+ <!-- CADUTA -->
+ <div class="scr" id="sDrop"></div>
+ <div class="scr" id="sFin"></div>
+ <!-- FINE -->
+ <div class="scr" id="sEnd"><img class="bg" src="img/bg5.webp">
+  <img class="sp" id="eG"><div class="head" id="eH" style="left:222px;top:249px;width:108px;height:108px"></div><img class="sp" data-k="screen5_sprite_hd/profile_frame">
+  <div class="txt" id="eT" style="left:20px;right:20px;top:640px;font-size:30px;color:#ffd84a"></div>
+  <img class="sp bt" id="eR" data-k="screen5_sprite_hd/button_restart">
+ </div>
+ <input id="kb" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+ <div id="pop" class="txt" style="display:none;left:40px;right:40px;top:330px;padding:24px;background:rgba(0,10,40,.92);border:2px solid #39c6ff;border-radius:18px;font:bold 20px Arial;line-height:28px;z-index:9"></div>
+</div>
+<script>window.CL_VERSION='1.0.3'</script><script src="../sb3/logo.js?v=1.0.3"></script><script src="layout.js?v=1.0.3"></script><script src="seq.js?v=1.0.3"></script><script src="domande.js?v=1.0.3"></script><script src="gioco.js?v=1.0.3"></script>
+</body></html>

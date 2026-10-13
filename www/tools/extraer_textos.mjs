@@ -2,7 +2,7 @@
 import fs from 'fs'; import * as acorn from '/workspace/acerte/node_tools/node_modules/acorn/dist/acorn.mjs'; import * as walk from '/workspace/acerte/node_tools/node_modules/acorn-walk/dist/walk.mjs';
 const src = fs.readFileSync(process.argv[2] || 'tmp/all.js', 'utf8');
 const ast = acorn.parse(src, { ecmaVersion: 'latest', sourceType: 'module' });
-export const esTexto = s => typeof s === 'string' && s.length >= 2 && (/\p{Ll}/u.test(s) || /^[A-ZÁÉÍÓÚÑÜ¡!¿?·,.:… 0-9]{5,}$/.test(s) && / /.test(s.trim()) && /[A-Z]{3}/.test(s)) && /[\p{L}]{2,}/u.test(s) && (/\s/.test(s.trim()) || /[áéíóúñ¿¡]/i.test(s) || /^[A-ZÁÉÍÓÚ¡¿][a-záéíóúñ]+[.!?…]?$/.test(s))
+export const esTexto = s => typeof s === 'string' && s.length >= 2 && !/data-k=|<svg|<img |deg\)|saturate\(|brightness\(|drop-shadow|@keyframes|gradient\(/.test(s) && (/\p{Ll}/u.test(s) || /^[A-ZÁÉÍÓÚÑÜ¡!¿?·,.:… 0-9]{5,}$/.test(s) && / /.test(s.trim()) && /[A-Z]{3}/.test(s)) && /[\p{L}]{2,}/u.test(s) && (/\s/.test(s.trim()) || /[áéíóúñ¿¡]/i.test(s) || /^[A-ZÁÉÍÓÚ¡¿][a-záéíóúñ]+[.!?…]?$/.test(s))
   && !/^[\w.-]+\.(js|mp3|mp4|png|webp|json|wasm|data|onnx|html|css)$/.test(s) && !/^(https?:|data:|blob:|#[0-9a-f]{3,8}$)/i.test(s)
   && !/[{};]\s*$/.test(s) && !/^[a-z-]+:\s?[\w#(.-]/.test(s) && !/^\d+(px|em|%)/.test(s) && !/^(rgba?|hsla?)\(/.test(s) && !/^(bold|italic|normal|\d{3}) /.test(s) && !/(^|\s)(px|translate|rotate|scale)\(/.test(s) && !/^[.#]?[a-z][\w-]*([ .#>:][\w-]+)*$/.test(s.trim()) ;
 const out = []; const man = JSON.parse(fs.readFileSync('tools/manifest.json')); const NOMBRES = new Set([...Object.keys(man.sounds), ...Object.keys(man.sprites)]);
