@@ -395,3 +395,6 @@ function audioDirecto(url, vol, tag, se) {
   const done = new Promise(r => { el.onended = () => { se.playing.delete(stopper); r(); }; el.onerror = () => r(); });
   return el.play().then(() => ({ dur: el.duration || 1, done })).catch(() => ({ dur: -1, done: Promise.resolve() }));
 }
+
+// Opciones › «Mi cabecera 3D» (mc3d/mc3d.js)
+if (window.MC3D) MC3D.config({ app: 'cadutalibera', nombre: 'Caduta Libera', titulo: 'Caduta Libera', logo: () => { try { return window.__LOGO_LOCAL || (window.__logoUrl && window.__logoUrl()) || (typeof LOGO_IMG !== 'undefined' && LOGO_IMG && LOGO_IMG.src) || null; } catch (e) { return null; } } });

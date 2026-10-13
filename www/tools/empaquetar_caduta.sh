@@ -3,7 +3,7 @@
 set -e
 cd "$(dirname "$0")/.."
 P=/workspace/caduta/repo_privado; PUB=/workspace/caduta/repo_web; APK=/workspace/caduta/android/app/src/main/assets/www
-JUEGO="index.html js ep3000 assets voz piper piper_it icon-192.png icon-512.png manifest.webmanifest version.json sw.js sb3 clasico_cl cabecera apertura logo.png logo_cl.png logo_ac.png LEEME.md"
+JUEGO="index.html js mc3d ep3000 assets voz piper piper_it icon-192.png icon-512.png manifest.webmanifest version.json sw.js sb3 clasico_cl cabecera apertura logo.png logo_cl.png logo_ac.png LEEME.md"
 rm -rf $APK; mkdir -p $APK; cp -rL $JUEGO $APK/
 # APK: voces a 24 kbps mono y sin modelo Piper espanol (frases pre-grabadas) -> APK < 200 MB
 rm -rf $APK/voz $APK/piper; cp -r /workspace/caduta/voz24 $APK/voz
@@ -15,7 +15,7 @@ mkdir -p $P/roblox; cp /workspace/caduta/roblox/*.rbxlx $P/roblox/
 mkdir -p $P/capturas; cp /workspace/caduta/shots/*.png $P/capturas/ 2>/dev/null || true
 mkdir -p $P/extraccion; cp /workspace/caduta/ext/slice.py /workspace/caduta/ext/layout.json $P/extraccion/; cp -r /workspace/caduta/ext/dec $P/extraccion/lua_descompilado
 mkdir -p $PUB; find $PUB -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-cp -rL index.html js ep3000 assets voz piper piper_it manifest.webmanifest version.json sw.js $PUB/; touch $PUB/.nojekyll
+cp -rL index.html js mc3d ep3000 assets voz piper piper_it manifest.webmanifest version.json sw.js $PUB/; touch $PUB/.nojekyll
 mkdir -p $PUB/sb3; cat > $PUB/sb3/logo.js <<'J'
 // Web pública: sin logos de las cadenas; el juego dibuja su propio emblema de huellas.
 window.__LOGO_CL = null; window.__LOGO_AC = null;
@@ -39,5 +39,9 @@ PY
 grep -rl "data:image/png;base64\|cl_intro\|bg2.webp" $PUB --include=*.js | head; echo listo
 # APK: modo 2D transpilado a ES5 (WebView antiguos) + diagnóstico
 python3 /workspace/caduta/lite_compat/build_lite.py /workspace/caduta/www/clasico_cl $APK/clasico_cl
+# APK: modelo de IA comprimido (.onnx.gz) y sonidos del Scratch solo en sb3/snd.js -> APK < 200 MB
+A2=$APK/mc3d; gzip -9 -c $A2/depth-anything-v2-small-q4f16.onnx > $A2/depth-anything-v2-small-q4f16.onnx.gz && rm $A2/depth-anything-v2-small-q4f16.onnx
+[ -f $APK/sb3/snd.js ] && find $APK/sb3/snd -name '*.mp3' ! -name '419ca907843416e034fb72fd6a79bed3.mp3' -delete 2>/dev/null || true
+find $APK/voz -name '*.mp3' -print0 | xargs -0 -P 16 -I{} sh -c 'ffmpeg -v error -y -i "{}" -ac 1 -ar 16000 -b:a 20k "{}.t.mp3" && mv "{}.t.mp3" "{}"'
 # APK: todo en www.pak (pocas entradas en el zip)
 python3 /workspace/caduta/www/tools/pak.py $(dirname $APK)
