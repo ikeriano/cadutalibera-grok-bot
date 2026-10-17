@@ -1,7 +1,7 @@
 plugins { id 'com.android.application' }
 
 def ksProps = new Properties()
-def ksFile = new File('/workspace/ahoracaigo/rebuild/keystore/keystore.properties')
+def ksFile = rootProject.file('keystore/keystore.properties')
 if (ksFile.exists()) ksFile.withInputStream { ksProps.load(it) }
 
 android {
@@ -11,13 +11,13 @@ android {
         applicationId 'com.ikeriano.cadutalibera'
         minSdk 19
         targetSdk 34
-        versionCode 10
-        versionName '1.0.9'
+        versionCode 11
+        versionName '1.0.10'
     }
     signingConfigs {
         release {
             if (ksFile.exists()) {
-                storeFile new File('/workspace/ahoracaigo/rebuild/keystore/' + ksProps['storeFile'])
+                storeFile rootProject.file('keystore/' + ksProps['storeFile'])
                 storePassword ksProps['storePassword']
                 keyAlias ksProps['keyAlias']
                 keyPassword ksProps['keyPassword']

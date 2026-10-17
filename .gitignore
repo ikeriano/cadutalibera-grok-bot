@@ -1,0 +1,17 @@
+node_modules/
+**/node_modules
+www/tmp/
+bak_*/
+android/keystore/
+android_lite/keystore/
+android/local.properties
+android_lite/local.properties
+android/app/build/
+android_lite/app/build/
+android/.gradle/
+android_lite/.gradle/
+android/build/
+android_lite/build/
+android/app/src/main/assets/
+android_lite/app/src/main/assets/
+*.apk

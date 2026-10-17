@@ -44,6 +44,7 @@ for (const o of [...T].sort((a, b) => b.s - a.s)) {
   if (o.s > _ri && o.e < _rf) { iguales++; continue; }
   if (_p3d.some(([i, f]) => o.s > i && o.e < f)) { iguales++; continue; }
   if (/\b(precision|uniform|varying|attribute|gl_\w+|vec[234]|mat[34]|void main|#define|#include|#ifdef|#endif|highp|mediump|texture2D)\b|\bMaterial\b|THREE\.|#\s*(if|ifdef|ifndef|else|elif|endif|define|include|pragma)\b|defined\s*\(|;\s*$|;\s*\n|\bfloat\b|\breturn\b/m.test(o.v)) { iguales++; continue; }
+  if (/precision |uniform |varying |attribute |#if|#elif|#else|#endif|#define|#include|#pragma|gl_[A-Z]|\bvec[234]\b|\bmat[234]\b|void main|USE_[A-Z]|[a-z]\s*\*=\s*[a-z]/.test(o.v)) { iguales++; continue; } // código GLSL de three.js: no se traduce
   const t = trad(o.v); if (t === o.v) { iguales++; continue; } n++;
   const rep = o.t === 'L' ? JSON.stringify(t) : t.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
   out = out.slice(0, o.s) + rep + out.slice(o.e);
